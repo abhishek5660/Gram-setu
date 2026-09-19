@@ -88,8 +88,10 @@ model Scheme {
   description        String
   descriptionHindi   String
   benefitAmount      String?
-  eligibilityCriteria String   // Plain text or JSON summary
-  requiredDocs       String   // Comma separated or JSON string
+  eligibilityCriteria String   // English eligibility criteria
+  eligibilityCriteriaHindi String? // Hindi eligibility criteria
+  requiredDocs       String   // English required docs
+  requiredDocsHindi  String?  // Hindi required docs
   createdAt          DateTime @default(now())
 }
 
@@ -103,6 +105,7 @@ model Notice {
   isGramSabha    Boolean   @default(false)
   gramSabhaDate  DateTime?
   agenda         String?
+  agendaHindi    String?
   publishDate    DateTime  @default(now())
   createdAt      DateTime  @default(now())
 }
@@ -112,6 +115,7 @@ model Payment {
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   category    String    // property_tax, water_tax, sanitation_fee
+  title       String    @default("Property Tax Dues")
   titleHindi  String
   amount      Float
   status      String    @default("PENDING") // PENDING, PAID

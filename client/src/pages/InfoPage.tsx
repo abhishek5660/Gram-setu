@@ -62,6 +62,7 @@ export const InfoPage: React.FC = () => {
         {notices.map((n) => {
           const title = language === 'hi' ? n.titleHindi : (n.title || n.titleHindi);
           const content = language === 'hi' ? n.contentHindi : (n.content || n.contentHindi);
+          const agenda = language === 'hi' ? (n.agendaHindi || n.agenda) : (n.agenda || n.agendaHindi);
 
           return (
             <div key={n.id} className="bg-amber-50 p-6 rounded-3xl border-2 border-amber-300 shadow-md space-y-3">
@@ -76,9 +77,9 @@ export const InfoPage: React.FC = () => {
                 </button>
               </div>
               <p className="text-amber-900 text-sm font-medium">{content}</p>
-              {n.agenda && (
+              {agenda && (
                 <div className="p-3 bg-white/80 rounded-2xl text-xs font-bold text-slate-800 whitespace-pre-line">
-                  {t('info.agenda_label')}<br />{n.agenda}
+                  {t('info.agenda_label')}<br />{agenda}
                 </div>
               )}
             </div>

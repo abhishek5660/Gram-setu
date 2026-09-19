@@ -81,6 +81,8 @@ export const SchemesPage: React.FC = () => {
         {schemes.map((scheme) => {
           const displayTitle = language === 'hi' ? scheme.titleHindi : (scheme.title || scheme.titleHindi);
           const displayDesc = language === 'hi' ? scheme.descriptionHindi : (scheme.description || scheme.descriptionHindi);
+          const displayEligibility = language === 'hi' ? (scheme.eligibilityCriteriaHindi || scheme.eligibilityCriteria) : (scheme.eligibilityCriteria || scheme.eligibilityCriteriaHindi);
+          const displayDocs = language === 'hi' ? (scheme.requiredDocsHindi || scheme.requiredDocs) : (scheme.requiredDocs || scheme.requiredDocsHindi);
 
           return (
             <div key={scheme.id} className="bg-white rounded-3xl p-6 border-4 border-saffron-500/30 shadow-xl space-y-4">
@@ -92,8 +94,8 @@ export const SchemesPage: React.FC = () => {
               </div>
               <p className="text-slate-600 text-sm font-medium">{displayDesc}</p>
               <div className="p-3 bg-slate-50 rounded-2xl text-xs font-bold text-slate-700 space-y-1">
-                <div><b>{t('schemes.eligibility_label')}</b> {scheme.eligibilityCriteria}</div>
-                <div><b>{t('schemes.docs_required')}</b> {scheme.requiredDocs}</div>
+                <div><b>{t('schemes.eligibility_label')}</b> {displayEligibility}</div>
+                <div><b>{t('schemes.docs_required')}</b> {displayDocs}</div>
               </div>
               <BigButton label={t('schemes.apply_now')} onClick={() => speak(displayTitle)} variant="primary" />
             </div>
