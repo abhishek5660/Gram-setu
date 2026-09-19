@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "npm install --prefix client && npm run build --prefix client && npm install --prefix server && npx prisma db push --schema=server/prisma/schema.prisma && npx tsx server/prisma/seed.ts",
+  "outputDirectory": "client/dist",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
