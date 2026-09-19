@@ -1,0 +1,122 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(uuid())
+  phone         String   @unique
+  name          String
+  age           Int      @default(30)
+  village       String   @default("रामपुर (Rampur)")
+  ward          String   @default("वार्ड 4 (Ward 4)")
+  aadhaarMasked String?  @default("XXXX-XXXX-8921")
+  role          String   @default("CITIZEN") // CITIZEN, ASSISTED, ADMIN
+  isSenior      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  applications Application[]
+  documents    Document[]
+  complaints   Complaint[]
+  payments     Payment[]
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  type      String   // AADHAAR, RATION_CARD, INCOME_PROOF, ELECTRICITY_BILL, PHOTO, OTHER
+  fileUrl   String
+  createdAt DateTime @default(now())
+}
+
+model Application {
+  id              String   @id @default(uuid())
+  trackingId      String   @unique
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceType     String   // income_certificate, birth_certificate, death_certificate, domicile_certificate, caste_certificate, marriage_registration, bpl_certificate, property_tax_receipt, water_connection, noc_request
+  serviceName     String
+  status          String   @default("SUBMITTED") // SUBMITTED, IN_REVIEW, APPROVED, REJECTED
+  formData        String   // JSON string of submitted fields
+  documentUrls    String   // JSON string array of attached docs
+  appliedBy       String?  // Self or family member name
+  rejectionReason String?
+  issuedCertUrl   String?
+  qrCodeData      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Complaint {
+  id              String   @id @default(uuid())
+  trackingId      String   @unique
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category        String   // street_light, water_supply, road, drainage, stray_animals, sanitation, other
+  categoryHindi   String
+  description     String
+  photoUrl        String?
+  voiceNoteUrl    String?
+  status          String   @default("SUBMITTED") // SUBMITTED, IN_REVIEW, ASSIGNED, RESOLVED
+  assignedTo      String?
+  resolutionNotes String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Scheme {
+  id                 String   @id @default(uuid())
+  title              String
+  titleHindi         String
+  category           String   // PENSION, HEALTH, HOUSING, RATION, EMPLOYMENT
+  description        String
+  descriptionHindi   String
+  benefitAmount      String?
+  eligibilityCriteria String   // Plain text or JSON summary
+  requiredDocs       String   // Comma separated or JSON string
+  createdAt          DateTime @default(now())
+}
+
+model Notice {
+  id             String    @id @default(uuid())
+  title          String
+  titleHindi     String
+  content        String
+  contentHindi   String
+  audioUrl       String?
+  isGramSabha    Boolean   @default(false)
+  gramSabhaDate  DateTime?
+  agenda         String?
+  publishDate    DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+}
+
+model Payment {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    String    // property_tax, water_tax, sanitation_fee
+  titleHindi  String
+  amount      Float
+  status      String    @default("PENDING") // PENDING, PAID
+  dueDate     DateTime
+  receiptId   String?
+  paidAt      DateTime?
+  createdAt   DateTime  @default(now())
+}

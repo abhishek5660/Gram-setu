@@ -1,0 +1,71 @@
+{
+  "app_name": "Gram Setu",
+  "app_subtitle": "AI-Powered Digital Panchayat Services",
+  "bada_text": "Bada Text (Big Text)",
+  "normal_text": "Normal Text",
+  "high_contrast": "High Contrast",
+  "normal_contrast": "Normal Mode",
+  "senior_mode": "Senior Citizen Mode",
+  "language_name": "English",
+
+  "nav": {
+    "home": "Home",
+    "certificates": "Certificates",
+    "complaints": "Complaints",
+    "schemes": "Government Schemes",
+    "documents": "Document Locker",
+    "notices": "Notice Board",
+    "payments": "Taxes & Dues",
+    "admin": "Secretary Dashboard",
+    "logout": "Logout"
+  },
+
+  "auth": {
+    "welcome": "Welcome to Gram Setu",
+    "tagline": "Complete all Panchayat work from home without visiting office",
+    "enter_phone": "Enter 10-digit Mobile Number",
+    "phone_placeholder": "e.g. 9876543210",
+    "send_otp": "Send OTP",
+    "enter_otp": "Enter 6-digit OTP",
+    "verify_otp": "Verify OTP & Continue",
+    "demo_hint": "Use OTP 123456 for instant demo access",
+    "quick_login_senior": "Login as Senior Citizen (Ramesh Kaka Demo)",
+    "quick_login_admin": "Login as Panchayat Secretary (Admin Demo)",
+    "select_role": "How will you use this app?"
+  },
+
+  "profile": {
+    "setup_title": "Your Profile Details",
+    "name": "Full Name",
+    "age": "Age in Years",
+    "village": "Village Name",
+    "ward": "Ward No. / Hamlet",
+    "aadhaar": "Aadhaar Number (Stored Securely)",
+    "senior_auto_detected": "Age 60+ detected! 'Senior Citizen Mode' is automatically enabled.",
+    "save": "Save Profile"
+  },
+
+  "voice": {
+    "listen_prompt": "Tap mic and speak... e.g. 'I need income certificate'",
+    "listening": "Listening... Please speak",
+    "stop": "Stop Audio",
+    "speak_again": "Read Out Again"
+  },
+
+  "home": {
+    "greeting": "Namaste & Welcome",
+    "senior_banner": "Senior Mode Active - Large Tiles & Voice Assistance",
+    "quick_services": "Main Panchayat Services",
+    "ask_mitra": "Ask Panchayat Mitra AI"
+  },
+
+  "admin": {
+    "title": "Gram Panchayat Rampur - Secretary Dashboard",
+    "pending_apps": "Pending Applications",
+    "pending_complaints": "Registered Complaints",
+    "total_villagers": "Registered Villagers",
+    "approve": "Approve",
+    "reject": "Reject",
+    "issue_certificate": "Issue Digital Certificate (with QR)"
+  }
+}
