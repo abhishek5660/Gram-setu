@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install --prefix client && npm run build --prefix client && npm install --prefix server && npx prisma db push --schema=server/prisma/schema.prisma && npx tsx server/prisma/seed.ts",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "client/dist",
   "rewrites": [
     {
