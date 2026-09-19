@@ -1,12 +1,15 @@
 {
   "app_name": "Gram Setu",
   "app_subtitle": "AI-Powered Digital Panchayat Services",
-  "bada_text": "Bada Text (Big Text)",
-  "normal_text": "Normal Text",
-  "high_contrast": "High Contrast",
-  "normal_contrast": "Normal Mode",
+  "govt_banner": "Rampur Panchayat • Govt of India / State Govt",
+  "digital_panchayat": "Digital Gram Panchayat",
+  "bada_text": "Bada Text (A+)",
+  "bada_text_on": "Bada Text (ON)",
+  "high_contrast": "Contrast",
+  "high_contrast_on": "Contrast (ON)",
   "senior_mode": "Senior Citizen Mode",
-  "language_name": "English",
+  "senior_mode_on": "Senior Mode (ON)",
+  "language_name": "हि / हिंदी",
 
   "nav": {
     "home": "Home",
@@ -17,7 +20,8 @@
     "notices": "Notice Board",
     "payments": "Taxes & Dues",
     "admin": "Secretary Dashboard",
-    "logout": "Logout"
+    "logout": "Logout",
+    "login": "Login"
   },
 
   "auth": {
@@ -29,13 +33,16 @@
     "enter_otp": "Enter 6-digit OTP",
     "verify_otp": "Verify OTP & Continue",
     "demo_hint": "Use OTP 123456 for instant demo access",
-    "quick_login_senior": "Login as Senior Citizen (Ramesh Kaka Demo)",
-    "quick_login_admin": "Login as Panchayat Secretary (Admin Demo)",
-    "select_role": "How will you use this app?"
+    "quick_login_senior": "Ramesh Prasad Kaka (Senior Citizen - Age 70)",
+    "senior_desc": "Senior mode + Large Tiles + Voice Assistant",
+    "quick_login_admin": "Shri Rameshwar Sharma (Panchayat Secretary)",
+    "admin_desc": "Administrative reviews, certificate issuing",
+    "quick_demo_title": "⚡ Quick Instant Demo Logins"
   },
 
   "profile": {
     "setup_title": "Your Profile Details",
+    "setup_subtitle": "Enter or update your personal details",
     "name": "Full Name",
     "age": "Age in Years",
     "village": "Village Name",
@@ -46,26 +53,120 @@
   },
 
   "voice": {
-    "listen_prompt": "Tap mic and speak... e.g. 'I need income certificate'",
+    "listen_prompt": "Speak aloud... e.g. 'I need income certificate' or 'street light broken'",
     "listening": "Listening... Please speak",
     "stop": "Stop Audio",
-    "speak_again": "Read Out Again"
+    "speak_again": "Read Out Again",
+    "floating_label": "Voice AI Assistant"
   },
 
   "home": {
     "greeting": "Namaste & Welcome",
-    "senior_banner": "Senior Mode Active - Large Tiles & Voice Assistance",
-    "quick_services": "Main Panchayat Services",
-    "ask_mitra": "Ask Panchayat Mitra AI"
+    "senior_banner": "Senior Citizen Mode Active - Large Tiles & Voice Assistance",
+    "quick_services": "Main Accessible Services (6 Big Tiles)",
+    "one_tap_access": "1-Tap Quick Access",
+    "tile_cert_title": "Certificate Application",
+    "tile_cert_sub": "Income, Birth, Domicile, Caste Certificates",
+    "tile_complaint_title": "Register Complaint",
+    "tile_complaint_sub": "Street light, Water supply, Road repairs",
+    "tile_schemes_title": "Senior Schemes & Pension",
+    "tile_schemes_sub": "Old Age Pension, Ayushman Card",
+    "tile_docs_title": "Document Locker",
+    "tile_docs_sub": "Saved Aadhaar & Ration Card",
+    "tile_panchayat_title": "Panchayat Contact Directory",
+    "tile_panchayat_sub": "Sarpanch, Secretary, ASHA Worker numbers",
+    "tile_ai_title": "Panchayat Mitra AI",
+    "tile_ai_sub": "Ask questions & fill forms by voice",
+    "upcoming_meeting": "Upcoming Gram Sabha Meeting",
+    "meeting_details": "📅 25 September 2026, 10:00 AM (Panchayat Bhawan)",
+    "agenda_text": "Agenda: Water Pipeline Expansion, Pension Verification & Sanitation Budget.",
+    "emergency_contacts": "Emergency Panchayat Contacts",
+    "sarpanch": "Sarpanch Smt. Malti Devi",
+    "secretary": "Panchayat Secretary Shri Rameshwar Sharma",
+    "call_now": "📞 Call Now"
+  },
+
+  "certificates": {
+    "title": "📜 Certificate Application Center",
+    "subtitle": "Get government certificates from home without visiting office",
+    "step1": "1. Select Service",
+    "step2": "2. Guided Application Form",
+    "income": "Annual Family Income (₹)",
+    "purpose": "Application Purpose / Reason",
+    "auto_link": "Aadhaar Card auto-linked from your Document Locker.",
+    "submit": "Submit Application",
+    "success_title": "Application Submitted Successfully!",
+    "tracking_id": "Your Tracking ID:",
+    "success_sub": "Panchayat Secretary will review your application within 48 hours.",
+    "apply_another": "Submit Another Application"
+  },
+
+  "complaints": {
+    "title": "💡 Gram Grievance Redressal",
+    "subtitle": "Submit village issues by voice or photo directly to Panchayat",
+    "label": "Describe your complaint (type or speak)",
+    "photo_button": "📷 Take Photo",
+    "voice_button": "🎙️ Record Voice Note",
+    "submit": "Submit Complaint",
+    "success_title": "Your complaint has been registered!",
+    "tracking_id": "Tracking Number:",
+    "ai_categorization": "🤖 AI Auto-Categorization:",
+    "assigned_dept": "🏢 Assigned Department:",
+    "another_complaint": "Register Another Complaint"
+  },
+
+  "schemes": {
+    "title": "👵 Government Schemes & Pension Hub",
+    "subtitle": "Senior Citizen Pension, Ayushman Card & Housing Grants",
+    "check_eligibility": "Check AI Eligibility",
+    "checking": "Checking...",
+    "results_title": "🎉 AI Eligibility Check Results",
+    "docs_required": "📄 Required Documents:",
+    "eligibility_label": "Eligibility:",
+    "apply_now": "Apply Directly Now"
+  },
+
+  "documents": {
+    "title": "📁 Secure Document Locker",
+    "subtitle": "Upload once, reuse automatically for future applications",
+    "add_new": "Add New Document",
+    "encrypted": "Verified & Encrypted",
+    "view": "View",
+    "download": "Download PDF"
+  },
+
+  "assistant": {
+    "title": "Panchayat Mitra (AI Assistant)",
+    "subtitle": "Your digital village assistant speaking your language",
+    "read_again": "Read Out Again",
+    "thinking": "Panchayat Mitra is thinking...",
+    "placeholder": "Speak or type your question... (e.g. Need Income Certificate)"
   },
 
   "admin": {
     "title": "Gram Panchayat Rampur - Secretary Dashboard",
+    "subtitle": "Secretary: Shri Rameshwar Sharma • Digital Certificate Approval",
     "pending_apps": "Pending Applications",
-    "pending_complaints": "Registered Complaints",
-    "total_villagers": "Registered Villagers",
-    "approve": "Approve",
-    "reject": "Reject",
-    "issue_certificate": "Issue Digital Certificate (with QR)"
+    "total_complaints": "Total Complaints",
+    "tab_apps": "📜 Applications",
+    "tab_complaints": "💡 Complaints",
+    "col_tracking": "Tracking ID",
+    "col_applicant": "Applicant",
+    "col_service": "Service Type",
+    "col_status": "Status",
+    "col_action": "Action",
+    "approve_qr": "Approve & Issue QR Certificate",
+    "qr_issued": "QR Digital Certificate Issued"
+  },
+
+  "payments": {
+    "title": "💳 Panchayat Tax & Water Fee Online Payments",
+    "subtitle": "Pay property tax and water bills from home & download digital receipts",
+    "status_paid": "✓ Paid",
+    "status_pending": "⏳ Payment Due",
+    "receipt_id": "Digital Receipt No:",
+    "pay_now": "Pay Now",
+    "paying": "Processing...",
+    "receipt_available": "Digital Receipt Available"
   }
 }

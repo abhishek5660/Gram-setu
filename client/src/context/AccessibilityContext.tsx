@@ -45,7 +45,9 @@ const AccessibilityContext = createContext<AccessibilityContextType | undefined>
 export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isBadaText, setIsBadaText] = useState<boolean>(() => localStorage.getItem('gs_bada_text') === 'true');
   const [isHighContrast, setIsHighContrast] = useState<boolean>(() => localStorage.getItem('gs_high_contrast') === 'true');
-  const [language, setLanguageState] = useState<'hi' | 'en'>('hi');
+  const [language, setLanguageState] = useState<'hi' | 'en'>(() => {
+    return (localStorage.getItem('gs_lang') as 'hi' | 'en') || 'hi';
+  });
   const [user, setUser] = useState<UserProfile | null>(() => {
     const saved = localStorage.getItem('gs_user');
     return saved ? JSON.parse(saved) : null;
@@ -107,6 +109,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setLanguage = (lang: 'hi' | 'en') => {
     setLanguageState(lang);
+    localStorage.setItem('gs_lang', lang);
   };
 
   const setToken = (t: string | null) => {

@@ -27,53 +27,53 @@ export const Header: React.FC = () => {
       <div className="bg-gradient-to-r from-saffron-600 via-amber-600 to-govGreen-700 text-white text-xs md:text-sm py-1 px-4 flex justify-between items-center font-medium">
         <div className="flex items-center gap-2">
           <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">
-            डिजिटल ग्राम पंचायत
+            {t('digital_panchayat')}
           </span>
-          <span className="hidden sm:inline">रामपुर (Rampur Panchayat) • भारत सरकार / राज्य शासन</span>
+          <span className="hidden sm:inline">{t('govt_banner')}</span>
         </div>
 
         {/* Quick Accessibility Bar */}
         <div className="flex items-center gap-3">
-          {/* Language Toggle */}
+          {/* Language Toggle Button */}
           <button
             onClick={() => {
               const next = language === 'hi' ? 'en' : 'hi';
               setLanguage(next);
-              speak(next === 'hi' ? 'भाषा हिंदी में बदली गई' : 'Language changed to English');
+              speak(next === 'hi' ? 'भाषा हिंदी में बदली गई' : 'Language switched to English');
             }}
-            className="flex items-center gap-1 bg-black/20 hover:bg-black/30 px-2 py-0.5 rounded font-bold transition-all text-xs"
-            title="भाषा बदलें (Change Language)"
+            className="flex items-center gap-1.5 bg-black/30 hover:bg-black/40 text-amber-200 border border-amber-300/40 px-2.5 py-0.5 rounded font-bold transition-all text-xs shadow-sm cursor-pointer"
+            title="Language Switcher"
           >
-            <Languages className="w-3.5 h-3.5" />
-            <span>{language === 'hi' ? 'EN / English' : 'हि / हिंदी'}</span>
+            <Languages className="w-3.5 h-3.5 text-amber-300" />
+            <span>{t('language_name')}</span>
           </button>
 
           {/* Bada Text Toggle Button */}
           <button
             onClick={() => {
               toggleBadaText();
-              speak(isBadaText ? 'सामान्य अक्षर मोड' : 'बड़ा अक्षर मोड सक्रिय');
+              speak(isBadaText ? 'Normal Text Mode' : 'Bada Text Mode Enabled');
             }}
-            className={`flex items-center gap-1 px-2.5 py-0.5 rounded font-bold text-xs transition-all ${
+            className={`flex items-center gap-1 px-2.5 py-0.5 rounded font-bold text-xs transition-all cursor-pointer ${
               isBadaText ? 'bg-amber-300 text-black ring-2 ring-yellow-400' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
             <Type className="w-3.5 h-3.5" />
-            <span>{isBadaText ? 'बड़ा पाठ (ON)' : 'बड़ा पाठ (A+)'}</span>
+            <span>{isBadaText ? t('bada_text_on') : t('bada_text')}</span>
           </button>
 
           {/* High Contrast Toggle */}
           <button
             onClick={() => {
               toggleHighContrast();
-              speak(isHighContrast ? 'सामान्य रंग मोड' : 'उच्च कंट्रास्ट मोड सक्रिय');
+              speak(isHighContrast ? 'Normal Contrast' : 'High Contrast Enabled');
             }}
-            className={`hidden md:flex items-center gap-1 px-2 py-0.5 rounded font-bold text-xs ${
+            className={`hidden md:flex items-center gap-1 px-2 py-0.5 rounded font-bold text-xs cursor-pointer ${
               isHighContrast ? 'bg-yellow-400 text-black' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>{isHighContrast ? 'कंट्रास्ट (ON)' : 'कंट्रास्ट'}</span>
+            <span>{isHighContrast ? t('high_contrast_on') : t('high_contrast')}</span>
           </button>
         </div>
       </div>
@@ -93,7 +93,7 @@ export const Header: React.FC = () => {
               {isSeniorMode && (
                 <span className="bg-emerald-100 text-emerald-800 font-bold text-xs px-2 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
                   <HeartHandshake className="w-3.5 h-3.5 text-emerald-600" />
-                  वरिष्ठ मोड
+                  {t('senior_mode')}
                 </span>
               )}
             </div>
@@ -109,16 +109,16 @@ export const Header: React.FC = () => {
           <button
             onClick={() => {
               toggleSeniorMode();
-              speak(!isSeniorMode ? 'वरिष्ठ नागरिक मोड सक्रिय हो गया है' : 'सामान्य मोड');
+              speak(!isSeniorMode ? 'Senior Citizen Mode Active' : 'Normal Mode Active');
             }}
-            className={`px-3 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all border ${
+            className={`px-3 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
               isSeniorMode 
                 ? 'bg-emerald-600 text-white border-emerald-700 shadow' 
                 : 'bg-amber-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
             }`}
           >
             <HeartHandshake className="w-4 h-4" />
-            <span className="hidden sm:inline">{isSeniorMode ? 'वरिष्ठ नागरिक (ON)' : 'वरिष्ठ नागरिक मोड'}</span>
+            <span className="hidden sm:inline">{isSeniorMode ? t('senior_mode_on') : t('senior_mode')}</span>
           </button>
 
           {/* User Profile or Login */}
@@ -133,15 +133,15 @@ export const Header: React.FC = () => {
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
                   <span className="text-xs font-bold text-slate-800 max-w-[120px] truncate">{user.name}</span>
-                  <span className="text-[10px] text-slate-500 font-semibold">{user.role === 'ADMIN' ? 'सचिव (Admin)' : 'ग्रामवासी'}</span>
+                  <span className="text-[10px] text-slate-500 font-semibold">{user.role === 'ADMIN' ? 'Secretary (Admin)' : 'Villager'}</span>
                 </div>
               </div>
 
               {/* Logout Button */}
               <button
                 onClick={logout}
-                className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                title="लॉगआउट"
+                className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                title={t('nav.logout')}
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -149,10 +149,10 @@ export const Header: React.FC = () => {
           ) : (
             <button
               onClick={() => navigate('/auth')}
-              className="bg-saffron-600 hover:bg-saffron-700 text-white font-bold px-4 py-2 rounded-xl text-sm min-h-[48px] shadow flex items-center gap-2"
+              className="bg-saffron-600 hover:bg-saffron-700 text-white font-bold px-4 py-2 rounded-xl text-sm min-h-[48px] shadow flex items-center gap-2 cursor-pointer"
             >
               <User className="w-4 h-4" />
-              <span>लॉगिन करें</span>
+              <span>{t('nav.login')}</span>
             </button>
           )}
         </div>
