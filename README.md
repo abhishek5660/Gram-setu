@@ -2,20 +2,18 @@
 
 > Mobile-first, voice-first digital panchayat web application designed for villagers, senior citizens, and panchayat administrators.
 
-![Gram Setu Banner](https://images.unsplash.com/photo-1544717305-2782549b5136?w=1200&auto=format&fit=crop)
-
 ---
 
 ## 🌟 Core Features
 
-- **🎙️ Voice-First Architecture**: Large floating microphone button on every screen powered by Web Speech API (`hi-IN` & `en-IN`) with Text-to-Speech audio readouts and audio stop controls.
-- **👵 Senior Citizen Mode (60+ Auto-Detection)**: Age 60+ users automatically receive a simplified 6-big-tile dashboard, >=56px touch targets, and slower voice speech playback.
-- **📜 Guided Certificate Applications**: Income, Birth, Domicile, Caste, Death, BPL certificates with document auto-linking.
-- **📁 Secure Document Locker**: Store Aadhaar and Ration card once, reuse across applications, download PDF certificates with verification QR codes.
-- **💡 Grievance Complaint System**: Voice note & photo complaint submission with AI-powered auto-categorization (Streetlight, Water supply, Roads, Drainage).
-- **👵 Schemes & Pension Hub**: AI Eligibility Checker that asks simple questions and determines qualification for Old Age Pension, Ayushman Bharat, and PM Awas Yojana.
-- **🏛️ Panchayat Secretary Admin Dashboard**: Review, approve, reject applications, issue digital certificates with QR codes, and manage complaints.
-- **♿ High Accessibility**: One-tap **"Bada Text"** (Font enlarge) toggle and **High Contrast** mode for low-vision users.
+- **🎙️ Voice-First Architecture**: Floating microphone button on every screen powered by Web Speech API (`hi-IN` & `en-IN`) with Text-to-Speech audio readouts.
+- **👵 Senior Citizen Mode (60+ Auto-Detection)**: Age 60+ users automatically receive a simplified 6-big-tile dashboard, >=56px touch targets, and slower voice speech.
+- **📜 Guided Certificate Applications**: Income, Birth, Domicile, Caste, Death, BPL certificates.
+- **📁 Secure Document Locker**: Upload Aadhaar and Ration card once, reuse across applications, download PDF certificates with QR codes.
+- **💡 Grievance Complaint System**: Voice note & photo complaint submission with AI auto-categorization.
+- **👵 Schemes & Pension Hub**: AI Eligibility Checker for Old Age Pension, Ayushman Bharat, and PM Awas Yojana.
+- **🏛️ Panchayat Secretary Admin Dashboard**: Review, approve, reject applications, issue digital certificates with QR codes.
+- **🌐 100% Bilingual Support**: Instant header toggle between **English** and **Hindi** across all pages and database records.
 
 ---
 
@@ -27,38 +25,50 @@
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 How to Deploy the Entire Fullstack Project
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm (v9 or higher)
+### Method 1: Deploying on Render (Recommended - 100% Free All-in-One)
 
-### Installation & Setup
+#### Step 1: Deploy Backend Web Service
+1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** → **Web Service**.
+2. Connect your GitHub repository: `abhishek5660/Gram-setu`.
+3. Configure settings:
+   - **Name**: `gram-setu-backend`
+   - **Root Directory**: `server`
+   - **Environment**: `Node`
+   - **Build Command**:
+     ```bash
+     npm install && npx prisma db push && npm run db:seed && npm run build
+     ```
+   - **Start Command**:
+     ```bash
+     npm start
+     ```
+4. Click **Create Web Service**. Render will build and deploy your API server at `https://gram-setu-backend.onrender.com`.
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/gram-setu.git
-   cd gram-setu
-   ```
+---
 
-2. **Install all dependencies**:
-   ```bash
-   npm run install:all
-   ```
+#### Step 2: Deploy Frontend Static Site
+1. On Render Dashboard, click **New +** → **Static Site**.
+2. Select your repository `abhishek5660/Gram-setu`.
+3. Configure settings:
+   - **Name**: `gram-setu`
+   - **Root Directory**: `client`
+   - **Build Command**: `npm install && npm run build`
+   - **Publish Directory**: `dist`
+4. Add Environment Variable:
+   - `VITE_API_BASE_URL` = `https://gram-setu-backend.onrender.com`
+5. Click **Create Static Site**. Your app is now live globally!
 
-3. **Setup Database & Seed Rampur Village Data**:
-   ```bash
-   npm run db:push
-   npm run db:seed
-   ```
+---
 
-4. **Start Local Servers (Frontend + Backend concurrently)**:
-   ```bash
-   npm run dev
-   ```
+### Method 2: Deploying Frontend on Vercel + Backend on Render
 
-   - **Frontend App**: `http://localhost:5173`
-   - **Backend API**: `http://localhost:5000/api`
+#### Step 1: Deploy Frontend on Vercel
+1. Go to [Vercel Dashboard](https://vercel.com/new) and import `abhishek5660/Gram-setu`.
+2. Set **Root Directory** to `client`.
+3. Framework Preset: **Vite**.
+4. Click **Deploy**. Vercel will give you a domain like `https://gram-setu.vercel.app`.
 
 ---
 
@@ -68,30 +78,6 @@
 |---|---|---|---|---|
 | **Senior Citizen** | Ramesh Prasad Kaka | `9876543210` | `123456` | Senior Mode, 6 big tiles, voice assistant |
 | **Panchayat Secretary** | Shri Rameshwar Sharma | `9999999999` | `123456` | Admin dashboard, QR certificate issuance |
-
----
-
-## 📂 Project Structure
-
-```
-gram-setu/
-├── package.json               # Root monorepo scripts
-├── server/                    # Node.js + Express + Prisma API
-│   ├── prisma/
-│   │   ├── schema.prisma      # SQLite Database Schema
-│   │   └── seed.ts            # Rampur Panchayat Seed Script
-│   └── src/
-│       ├── routes/            # Auth and Panchayat API routes
-│       ├── services/          # Pluggable AI Assistant Service
-│       └── server.ts          # Express server entrypoint
-└── client/                    # Vite + React + TypeScript App
-    ├── src/
-    │   ├── components/        # Accessible BigButton, VoiceFloatingMic, Header
-    │   ├── context/           # AccessibilityContext (Voice, i18n, Senior Mode)
-    │   ├── locales/           # Hindi (hi.json) & English (en.json) i18n
-    │   └── pages/             # Home, Certificates, Complaints, Admin, Schemes
-    └── index.html
-```
 
 ---
 
