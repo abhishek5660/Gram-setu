@@ -30,26 +30,34 @@
     "enter_phone": "Enter 10-digit Mobile Number",
     "phone_placeholder": "e.g. 9876543210",
     "send_otp": "Send OTP",
+    "sending_otp": "Sending OTP...",
     "enter_otp": "Enter 6-digit OTP",
     "verify_otp": "Verify OTP & Continue",
+    "verifying_otp": "Verifying...",
     "demo_hint": "Use OTP 123456 for instant demo access",
     "quick_login_senior": "Ramesh Prasad Kaka (Senior Citizen - Age 70)",
     "senior_desc": "Senior mode + Large Tiles + Voice Assistant",
     "quick_login_admin": "Shri Rameshwar Sharma (Panchayat Secretary)",
     "admin_desc": "Administrative reviews, certificate issuing",
-    "quick_demo_title": "⚡ Quick Instant Demo Logins"
+    "quick_demo_title": "⚡ Quick Instant Demo Logins",
+    "change_phone": "← Enter different number",
+    "error_invalid_phone": "Please enter a valid 10-digit mobile number",
+    "error_enter_otp": "Please enter OTP"
   },
 
   "profile": {
     "setup_title": "Your Profile Details",
     "setup_subtitle": "Enter or update your personal details",
     "name": "Full Name",
+    "name_placeholder": "e.g. Ramesh Prasad Kaka",
     "age": "Age in Years",
     "village": "Village Name",
     "ward": "Ward No. / Hamlet",
     "aadhaar": "Aadhaar Number (Stored Securely)",
+    "secured_badge": "🔒 Secured & Confidential",
     "senior_auto_detected": "Age 60+ detected! 'Senior Citizen Mode' is automatically enabled.",
-    "save": "Save Profile"
+    "save": "Save Profile",
+    "saving": "Saving..."
   },
 
   "voice": {
@@ -57,7 +65,10 @@
     "listening": "Listening... Please speak",
     "stop": "Stop Audio",
     "speak_again": "Read Out Again",
-    "floating_label": "Voice AI Assistant"
+    "floating_label": "Voice AI Assistant",
+    "ai_modal_title": "Listening to your voice...",
+    "ai_modal_sub": "Say \"Need Income Certificate\", \"Light broken\", or \"Pension Status\"",
+    "transcript_placeholder": "Speak, I am listening..."
   },
 
   "home": {
@@ -93,12 +104,22 @@
     "step2": "2. Guided Application Form",
     "income": "Annual Family Income (₹)",
     "purpose": "Application Purpose / Reason",
+    "purpose_default": "Old Age Pension Application",
     "auto_link": "Aadhaar Card auto-linked from your Document Locker.",
     "submit": "Submit Application",
+    "submitting": "Submitting Application...",
     "success_title": "Application Submitted Successfully!",
     "tracking_id": "Your Tracking ID:",
     "success_sub": "Panchayat Secretary will review your application within 48 hours.",
-    "apply_another": "Submit Another Application"
+    "apply_another": "Submit Another Application",
+    "services": {
+      "income_certificate": "Income Certificate",
+      "birth_certificate": "Birth Certificate",
+      "domicile_certificate": "Domicile Certificate",
+      "caste_certificate": "Caste Certificate",
+      "death_certificate": "Death Certificate",
+      "bpl_certificate": "BPL Certificate"
+    }
   },
 
   "complaints": {
@@ -108,11 +129,13 @@
     "photo_button": "📷 Take Photo",
     "voice_button": "🎙️ Record Voice Note",
     "submit": "Submit Complaint",
+    "submitting": "Submitting Complaint...",
     "success_title": "Your complaint has been registered!",
     "tracking_id": "Tracking Number:",
     "ai_categorization": "🤖 AI Auto-Categorization:",
     "assigned_dept": "🏢 Assigned Department:",
-    "another_complaint": "Register Another Complaint"
+    "another_complaint": "Register Another Complaint",
+    "default_text": "Street light in Ward 4 has been non-functional for 3 days."
   },
 
   "schemes": {
@@ -140,7 +163,9 @@
     "subtitle": "Your digital village assistant speaking your language",
     "read_again": "Read Out Again",
     "thinking": "Panchayat Mitra is thinking...",
-    "placeholder": "Speak or type your question... (e.g. Need Income Certificate)"
+    "placeholder": "Speak or type your question... (e.g. Need Income Certificate)",
+    "stop_voice": "Stop Voice",
+    "initial_greeting": "Namaste! I am Panchayat Mitra. I can help you apply for income certificates, pensions, complaints, or government schemes. How can I assist you?"
   },
 
   "admin": {
@@ -157,6 +182,16 @@
     "col_action": "Action",
     "approve_qr": "Approve & Issue QR Certificate",
     "qr_issued": "QR Digital Certificate Issued"
+  },
+
+  "info": {
+    "title": "🏛️ Panchayat Directory & Public Notices",
+    "subtitle": "Call panchayat officials and emergency services in 1-tap",
+    "emergency_title": "📞 1-Tap Emergency Contacts (Direct Call)",
+    "notices_title": "📢 Public Notices & Gram Sabha Meetings",
+    "call_button": "Call Now",
+    "listen_button": "Listen",
+    "agenda_label": "📋 Gram Sabha Agenda:"
   },
 
   "payments": {

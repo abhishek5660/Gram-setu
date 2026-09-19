@@ -10,8 +10,8 @@ export const ProfileSetupPage: React.FC = () => {
 
   const [name, setName] = useState<string>(user?.name || '');
   const [age, setAge] = useState<string>(user?.age ? String(user.age) : '30');
-  const [village, setVillage] = useState<string>(user?.village || 'ग्राम रामपुर (Rampur)');
-  const [ward, setWard] = useState<string>(user?.ward || 'वार्ड 4 (Ward 4)');
+  const [village, setVillage] = useState<string>(user?.village || 'Rampur');
+  const [ward, setWard] = useState<string>(user?.ward || 'Ward 4');
   const [aadhaar, setAadhaar] = useState<string>('8921');
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
@@ -21,13 +21,13 @@ export const ProfileSetupPage: React.FC = () => {
 
   useEffect(() => {
     if (isSenior) {
-      speak('आपकी आयु 60 वर्ष से अधिक है! वरिष्ठ नागरिक सुगम मोड स्वतः सक्रिय कर दिया गया है।');
+      speak(t('profile.senior_auto_detected'));
     }
   }, [numAge]);
 
   const handleSave = async () => {
     if (!name) {
-      alert('कृपया अपना नाम दर्ज करें');
+      alert('Please enter your full name');
       return;
     }
 
@@ -51,8 +51,8 @@ export const ProfileSetupPage: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
-        setMessage(data.message || 'प्रोफाइल सहेज ली गई है');
-        speak(data.message || 'प्रोफाइल सहेज ली गई है');
+        setMessage(data.message || 'Profile saved successfully');
+        speak(data.message || 'Profile saved');
         setTimeout(() => navigate('/home'), 1500);
       }
     } catch (e) {
@@ -76,7 +76,7 @@ export const ProfileSetupPage: React.FC = () => {
               {t('profile.setup_title')}
             </h1>
             <p className="text-sm font-medium text-slate-500">
-              अपनी जानकारी भरें या अद्यतन करें
+              {t('profile.setup_subtitle')}
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export const ProfileSetupPage: React.FC = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="उदा: रमेश प्रसाद काका"
+              placeholder={t('profile.name_placeholder')}
               className="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-300 font-bold text-xl text-slate-900 bg-slate-50 min-h-[56px]"
             />
           </div>
@@ -175,13 +175,13 @@ export const ProfileSetupPage: React.FC = () => {
                 XXXX-XXXX-{aadhaar.slice(-4) || '8921'}
               </span>
               <span className="text-xs bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-full">
-                🔒 सुरक्षित व गोपनीय
+                {t('profile.secured_badge')}
               </span>
             </div>
           </div>
 
           <BigButton
-            label={loading ? 'सहेजा जा रहा है...' : t('profile.save')}
+            label={loading ? t('profile.saving') : t('profile.save')}
             onClick={handleSave}
             disabled={loading}
             variant="primary"

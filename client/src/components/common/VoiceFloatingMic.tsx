@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAccessibility } from '../../context/AccessibilityContext';
-import { Mic, MicOff, Volume2, Square, Sparkles, X, ArrowRight } from 'lucide-react';
+import { Mic, Square, Sparkles, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const VoiceFloatingMic: React.FC = () => {
@@ -13,7 +13,7 @@ export const VoiceFloatingMic: React.FC = () => {
     speak,
     language,
     voiceTranscript,
-    isSeniorMode
+    t
   } = useAccessibility();
 
   const [showVoiceModal, setShowVoiceModal] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export const VoiceFloatingMic: React.FC = () => {
       stopListening();
     } else {
       setShowVoiceModal(true);
-      speak(language === 'hi' ? 'बोलिए! मैं आपकी क्या सहायता कर सकता हूँ?' : 'Please speak! How can I help you today?');
+      speak(language === 'hi' ? 'बोलिए! मैं आपकी क्या सहायता कर सकता हूँ?' : 'Please speak! How can I assist you today?');
       
       listen((result) => {
         setCapturedQuery(result);
@@ -38,7 +38,7 @@ export const VoiceFloatingMic: React.FC = () => {
     const text = query.toLowerCase();
 
     if (text.includes('income') || text.includes('आय प्रमाणपत्र') || text.includes('आया')) {
-      speak('आय प्रमाण पत्र आवेदन पृष्ठ पर ले जाया जा रहा है।');
+      speak('Opening Income Certificate Application...');
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/certificates?service=income_certificate');
@@ -47,7 +47,7 @@ export const VoiceFloatingMic: React.FC = () => {
     }
 
     if (text.includes('complaint') || text.includes('शिकायत') || text.includes('लाइट') || text.includes('पानी')) {
-      speak('शिकायत निवारण पृष्ठ खोला जा रहा है।');
+      speak('Opening Complaints Page...');
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/complaints');
@@ -56,7 +56,7 @@ export const VoiceFloatingMic: React.FC = () => {
     }
 
     if (text.includes('pension') || text.includes('पेंशन') || text.includes('योजना')) {
-      speak('सरकारी योजनाएं एवं पेंशन केंद्र पर ले जाया जा रहा है।');
+      speak('Opening Schemes & Pension Hub...');
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/schemes');
@@ -65,7 +65,7 @@ export const VoiceFloatingMic: React.FC = () => {
     }
 
     if (text.includes('document') || text.includes('आधार') || text.includes('कागज')) {
-      speak('दस्तावेज़ लॉकर खोला जा रहा है।');
+      speak('Opening Document Locker...');
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/documents');
@@ -74,7 +74,7 @@ export const VoiceFloatingMic: React.FC = () => {
     }
 
     // Default: Open AI Panchayat Mitra Assistant Chat
-    speak(`मैंने सुना: "${query}"। पंचायत मित्र एआई सहायक से सहायता प्राप्त करें।`);
+    speak(`Asking Panchayat Mitra AI...`);
     setTimeout(() => {
       setShowVoiceModal(false);
       navigate(`/assistant?q=${encodeURIComponent(query)}`);
@@ -89,17 +89,17 @@ export const VoiceFloatingMic: React.FC = () => {
         {isSpeaking && (
           <button
             onClick={stopSpeech}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-full shadow-2xl animate-bounce border-2 border-white"
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-full shadow-2xl animate-bounce border-2 border-white cursor-pointer"
           >
             <Square className="w-4 h-4 fill-white" />
-            <span className="text-sm">आवाज रोकें (Stop)</span>
+            <span className="text-sm">{t('voice.stop')}</span>
           </button>
         )}
 
         {/* Floating Voice Mic Button */}
         <button
           onClick={handleMicClick}
-          aria-label="बोलकर सहायता प्राप्त करें (Voice Assistant Mic)"
+          aria-label={t('voice.floating_label')}
           className={`relative group min-w-[68px] min-h-[68px] w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 border-4 border-white cursor-pointer ${
             isListening
               ? 'bg-red-600 text-white animate-mic-pulse scale-110'
@@ -121,7 +121,7 @@ export const VoiceFloatingMic: React.FC = () => {
           
           {/* Label Tooltip */}
           <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-900/90 text-white text-xs font-bold px-3 py-1.5 rounded-xl whitespace-nowrap hidden group-hover:block shadow-lg">
-            {isListening ? 'सुन रहा हूँ...' : 'बोलकर कहें (Voice AI)'}
+            {isListening ? t('voice.listening') : t('voice.floating_label')}
           </span>
         </button>
       </div>
@@ -135,7 +135,7 @@ export const VoiceFloatingMic: React.FC = () => {
                 stopListening();
                 setShowVoiceModal(false);
               }}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-full"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-full cursor-pointer"
             >
               <X className="w-6 h-6" />
             </button>
@@ -148,16 +148,16 @@ export const VoiceFloatingMic: React.FC = () => {
             </div>
 
             <h2 className="text-2xl font-extrabold text-slate-900 mb-2">
-              {isListening ? 'आपकी आवाज सुनी जा रही है...' : 'पंचायत मित्र एआई बोलचाल'}
+              {isListening ? t('voice.ai_modal_title') : t('voice.floating_label')}
             </h2>
             <p className="text-slate-600 text-base font-medium mb-4">
-              "आय प्रमाण पत्र चाहिए", "लाइट खराब है", या "पेंशन स्टेटस" बोलें
+              {t('voice.ai_modal_sub')}
             </p>
 
             {/* Live Voice Transcript Output */}
             <div className="w-full bg-amber-50 rounded-2xl p-4 border-2 border-amber-200 min-h-[80px] flex items-center justify-center mb-6">
               <p className="text-xl font-bold text-slate-800 italic">
-                {voiceTranscript || (isListening ? 'बोलिए, मैं सुन रहा हूँ...' : 'आपका संदेश यहाँ दिखेगा...')}
+                {voiceTranscript || (isListening ? t('voice.listening') : t('voice.transcript_placeholder'))}
               </p>
             </div>
 
@@ -165,33 +165,33 @@ export const VoiceFloatingMic: React.FC = () => {
             <div className="w-full grid grid-cols-2 gap-2 text-left">
               <button
                 onClick={() => handleVoiceQuery('आय प्रमाणपत्र चाहिए')}
-                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between"
+                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
-                <span>📜 आय प्रमाणपत्र</span>
+                <span>📜 {t('home.tile_cert_title')}</span>
                 <ArrowRight className="w-4 h-4 text-saffron-600" />
               </button>
 
               <button
                 onClick={() => handleVoiceQuery('शिकायत दर्ज करें')}
-                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between"
+                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
-                <span>💡 बिजली/पानी शिकायत</span>
+                <span>💡 {t('home.tile_complaint_title')}</span>
                 <ArrowRight className="w-4 h-4 text-saffron-600" />
               </button>
 
               <button
                 onClick={() => handleVoiceQuery('पेंशन योजना')}
-                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between"
+                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
-                <span>👵 वृद्धावस्था पेंशन</span>
+                <span>👵 {t('home.tile_schemes_title')}</span>
                 <ArrowRight className="w-4 h-4 text-saffron-600" />
               </button>
 
               <button
                 onClick={() => handleVoiceQuery('दस्तावेज़ लॉकर')}
-                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between"
+                className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
-                <span>📁 आधार/कागज पत्र</span>
+                <span>📁 {t('home.tile_docs_title')}</span>
                 <ArrowRight className="w-4 h-4 text-saffron-600" />
               </button>
             </div>

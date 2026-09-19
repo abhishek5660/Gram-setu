@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
-import { Sparkles, CheckCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const SchemesPage: React.FC = () => {
-  const { user, speak } = useAccessibility();
+  const { user, t, speak } = useAccessibility();
   const [schemes, setSchemes] = useState<any[]>([]);
   const [eligibilityResults, setEligibilityResults] = useState<any[]>([]);
   const [checking, setChecking] = useState<boolean>(false);
@@ -31,7 +31,7 @@ export const SchemesPage: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setEligibilityResults(data.results || []);
-        speak(`बधाई हो! आप ${data.results.length} योजनाओं के लिए पात्र हैं।`);
+        speak(`Eligible for ${data.results.length} schemes!`);
       }
     } catch (e) {
       console.error(e);
@@ -44,32 +44,32 @@ export const SchemesPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">👵 सरकारी योजनाएं एवं पेंशन हब</h1>
+          <h1 className="text-3xl font-black text-slate-900">{t('schemes.title')}</h1>
           <p className="text-slate-600 font-medium text-base mt-1">
-            वरिष्ठ नागरिक पेंशन, आयुष्मान कार्ड व आवास योजना की जानकारी
+            {t('schemes.subtitle')}
           </p>
         </div>
 
         <button
           onClick={handleCheckEligibility}
-          className="bg-gradient-to-r from-saffron-600 to-amber-600 text-white font-black px-5 py-3 rounded-2xl shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
+          className="bg-gradient-to-r from-saffron-600 to-amber-600 text-white font-black px-5 py-3 rounded-2xl shadow-lg hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-5 h-5 text-amber-200" />
-          <span>{checking ? 'जांच जारी...' : 'AI पात्रता जांचें (Check Eligibility)'}</span>
+          <span>{checking ? t('schemes.checking') : t('schemes.check_eligibility')}</span>
         </button>
       </div>
 
       {eligibilityResults.length > 0 && (
         <div className="mb-8 bg-emerald-50 border-4 border-emerald-400 rounded-3xl p-6 space-y-4">
           <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-2">
-            <span>🎉 AI पात्रता जांच परिणाम ({user?.name || 'रमेश प्रसाद کاका'})</span>
+            <span>{t('schemes.results_title')} ({user?.name || ''})</span>
           </h2>
           {eligibilityResults.map((res, i) => (
             <div key={i} className="p-4 bg-white rounded-2xl border-2 border-emerald-300 font-bold space-y-2">
               <div className="text-lg text-emerald-900 font-black">{res.schemeTitle}</div>
               <p className="text-slate-700 text-sm">{res.reasonHindi}</p>
               <div className="text-xs text-saffron-700 bg-saffron-50 p-2 rounded-xl border border-saffron-200">
-                📄 आवश्यक कागजात: {res.missingDocs.join(', ')}
+                {t('schemes.docs_required')} {res.missingDocs.join(', ')}
               </div>
             </div>
           ))}
@@ -88,10 +88,10 @@ export const SchemesPage: React.FC = () => {
             </div>
             <p className="text-slate-600 text-sm font-medium">{scheme.descriptionHindi}</p>
             <div className="p-3 bg-slate-50 rounded-2xl text-xs font-bold text-slate-700 space-y-1">
-              <div><b>पात्रता:</b> {scheme.eligibilityCriteria}</div>
-              <div><b>कागजात:</b> {scheme.requiredDocs}</div>
+              <div><b>{t('schemes.eligibility_label')}</b> {scheme.eligibilityCriteria}</div>
+              <div><b>{t('schemes.docs_required')}</b> {scheme.requiredDocs}</div>
             </div>
-            <BigButton label="सीधा आवेदन करें (Apply Now)" onClick={() => speak(`${scheme.titleHindi} का फॉर्म खोला जा रहा है`)} variant="primary" />
+            <BigButton label={t('schemes.apply_now')} onClick={() => speak(scheme.titleHindi)} variant="primary" />
           </div>
         ))}
       </div>

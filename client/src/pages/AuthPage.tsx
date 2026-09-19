@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
-import { Phone, ShieldCheck, KeyRound, UserCheck, Heart, Sparkles, Volume2 } from 'lucide-react';
+import { Phone, ShieldCheck, KeyRound, UserCheck, Sparkles, Volume2 } from 'lucide-react';
 
 export const AuthPage: React.FC = () => {
   const { t, setUser, setToken, speak, isHighContrast } = useAccessibility();
@@ -17,8 +17,8 @@ export const AuthPage: React.FC = () => {
 
   const handleSendOtp = async () => {
     if (!phone || phone.length < 10) {
-      setError('कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें');
-      speak('कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें');
+      setError(t('auth.error_invalid_phone'));
+      speak(t('auth.error_invalid_phone'));
       return;
     }
 
@@ -36,12 +36,12 @@ export const AuthPage: React.FC = () => {
       if (res.ok) {
         setStep('OTP');
         setOtp('123456'); // Auto-fill for developer demo convenience
-        speak('ओटीपी आपके नंबर पर भेज दिया गया है। डेमो ओटीपी 1 2 3 4 5 6 दर्ज करें।');
+        speak('OTP sent! Use demo OTP 1 2 3 4 5 6');
       } else {
-        setError(data.error || 'ओटीपी भेजने में समस्या आई');
+        setError(data.error || 'Error sending OTP');
       }
     } catch (err) {
-      setError('सर्वर से संपर्क नहीं हो पाया');
+      setError('Server connection error');
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ export const AuthPage: React.FC = () => {
 
   const handleVerifyOtp = async () => {
     if (!otp) {
-      setError('कृपया ओटीपी दर्ज करें');
+      setError(t('auth.error_enter_otp'));
       return;
     }
 
@@ -67,7 +67,7 @@ export const AuthPage: React.FC = () => {
       if (res.ok) {
         setToken(data.token);
         setUser(data.user);
-        speak(`नमस्ते ${data.user.name}! ग्राम सेतु में आपका स्वागत है।`);
+        speak(`Welcome ${data.user.name}!`);
         
         if (data.user.role === 'ADMIN') {
           navigate('/admin');
@@ -75,11 +75,10 @@ export const AuthPage: React.FC = () => {
           navigate('/home');
         }
       } else {
-        setError(data.error || 'अमान्य ओटीपी');
-        speak('गलत ओटीपी! पुनः प्रयास करें');
+        setError(data.error || 'Invalid OTP');
       }
     } catch (err) {
-      setError('सत्यापन विफल रहा');
+      setError('Verification failed');
     } finally {
       setLoading(false);
     }
@@ -98,7 +97,7 @@ export const AuthPage: React.FC = () => {
       if (res.ok) {
         setToken(data.token);
         setUser(data.user);
-        speak(`नमस्ते ${data.user.name}! ग्राम सेतु में आपका स्वागत है।`);
+        speak(`Welcome ${data.user.name}!`);
         if (data.user.role === 'ADMIN') {
           navigate('/admin');
         } else {
@@ -163,7 +162,7 @@ export const AuthPage: React.FC = () => {
             </div>
 
             <BigButton
-              label={loading ? 'ओटीपी भेजा जा रहा है...' : t('auth.send_otp')}
+              label={loading ? t('auth.sending_otp') : t('auth.send_otp')}
               onClick={handleSendOtp}
               disabled={loading}
               icon={<ShieldCheck className="w-7 h-7" />}
@@ -196,7 +195,7 @@ export const AuthPage: React.FC = () => {
             </div>
 
             <BigButton
-              label={loading ? 'सत्यापित हो रहा है...' : t('auth.verify_otp')}
+              label={loading ? t('auth.verifying_otp') : t('auth.verify_otp')}
               onClick={handleVerifyOtp}
               disabled={loading}
               variant="secondary"
@@ -206,7 +205,7 @@ export const AuthPage: React.FC = () => {
               onClick={() => setStep('PHONE')}
               className="w-full text-center text-slate-500 hover:text-saffron-600 font-bold text-sm py-2"
             >
-              ← दूसरा नंबर दर्ज करें (Change Phone Number)
+              {t('auth.change_phone')}
             </button>
           </div>
         )}
@@ -216,18 +215,18 @@ export const AuthPage: React.FC = () => {
         {/* Instant One-Tap Demo Access */}
         <div className="space-y-3">
           <p className="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
-            ⚡ त्वरित डेमो टेस्ट (Instant Quick Demo Logins)
+            {t('auth.quick_demo_title')}
           </p>
 
           <button
             onClick={() => handleDemoLogin('9876543210', 'CITIZEN')}
-            className="w-full p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-900 font-bold text-left flex items-center justify-between group transition-all"
+            className="w-full p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-900 font-bold text-left flex items-center justify-between group transition-all cursor-pointer"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">👵</span>
               <div>
-                <div className="font-extrabold text-base">रमेश प्रसाद काका (वरिष्ठ नागरिक - 70 वर्ष)</div>
-                <div className="text-xs text-emerald-700">वरिष्ठ नागरिक सुगम मोड + विशाल टाइल्स</div>
+                <div className="font-extrabold text-base">{t('auth.quick_login_senior')}</div>
+                <div className="text-xs text-emerald-700">{t('auth.senior_desc')}</div>
               </div>
             </div>
             <UserCheck className="w-5 h-5 text-emerald-600 group-hover:scale-110" />
@@ -235,13 +234,13 @@ export const AuthPage: React.FC = () => {
 
           <button
             onClick={() => handleDemoLogin('9999999999', 'ADMIN')}
-            className="w-full p-4 rounded-2xl bg-saffron-50 hover:bg-saffron-100 border-2 border-saffron-300 text-saffron-900 font-bold text-left flex items-center justify-between group transition-all"
+            className="w-full p-4 rounded-2xl bg-saffron-50 hover:bg-saffron-100 border-2 border-saffron-300 text-saffron-900 font-bold text-left flex items-center justify-between group transition-all cursor-pointer"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">🏛️</span>
               <div>
-                <div className="font-extrabold text-base">श्री रामेश्वर शर्मा (ग्राम पंचायत सचिव)</div>
-                <div className="text-xs text-saffron-700">प्रशासनिक समीक्षा, प्रमाण पत्र जारी करना</div>
+                <div className="font-extrabold text-base">{t('auth.quick_login_admin')}</div>
+                <div className="text-xs text-saffron-700">{t('auth.admin_desc')}</div>
               </div>
             </div>
             <UserCheck className="w-5 h-5 text-saffron-600 group-hover:scale-110" />

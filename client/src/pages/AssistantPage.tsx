@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
-import { Bot, Send, Mic, Volume2, Square, Sparkles, User, ArrowRight } from 'lucide-react';
+import { Send, Volume2, Square } from 'lucide-react';
 
 export const AssistantPage: React.FC = () => {
-  const { speak, isSpeaking, stopSpeech, isListening, listen } = useAccessibility();
+  const { speak, isSpeaking, stopSpeech, t } = useAccessibility();
   const [searchParams] = useSearchParams();
   const initialQ = searchParams.get('q') || '';
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export const AssistantPage: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([
     {
       role: 'assistant',
-      content: 'नमस्ते! मैं पंचायत मित्र हूँ। मैं आय प्रमाण पत्र, पेंशन, शिकायत और सरकारी योजनाओं में आपकी सहायता कर सकता हूँ। आप क्या करना चाहते हैं?'
+      content: t('assistant.initial_greeting')
     }
   ]);
   const [input, setInput] = useState<string>('');
@@ -47,9 +47,8 @@ export const AssistantPage: React.FC = () => {
 
         if (data.identifiedService === 'income_certificate') {
           setTimeout(() => {
-            speak('आय प्रमाण पत्र फॉर्म खोला जा रहा है।');
             navigate('/certificates?service=income_certificate');
-          }, 4000);
+          }, 3000);
         }
       }
     } catch (e) {
@@ -67,18 +66,18 @@ export const AssistantPage: React.FC = () => {
             🤖
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-900">पंचायत मित्र (AI Assistant)</h1>
-            <p className="text-sm font-medium text-slate-500">आपकी भाषा में बोलने वाला पंचायत डिजिटल मित्र</p>
+            <h1 className="text-2xl md:text-3xl font-black text-slate-900">{t('assistant.title')}</h1>
+            <p className="text-sm font-medium text-slate-500">{t('assistant.subtitle')}</p>
           </div>
         </div>
 
         {isSpeaking && (
           <button
             onClick={stopSpeech}
-            className="flex items-center gap-2 bg-red-600 text-white font-bold px-3 py-2 rounded-xl text-xs animate-pulse"
+            className="flex items-center gap-2 bg-red-600 text-white font-bold px-3 py-2 rounded-xl text-xs animate-pulse cursor-pointer"
           >
             <Square className="w-4 h-4 fill-white" />
-            <span>आवाज रोकें</span>
+            <span>{t('assistant.stop_voice')}</span>
           </button>
         )}
       </div>
@@ -100,9 +99,9 @@ export const AssistantPage: React.FC = () => {
             }`}>
               <p>{m.content}</p>
               {m.role === 'assistant' && (
-                <button onClick={() => speak(m.content)} className="mt-2 text-xs text-saffron-700 font-bold flex items-center gap-1 hover:underline">
+                <button onClick={() => speak(m.content)} className="mt-2 text-xs text-saffron-700 font-bold flex items-center gap-1 hover:underline cursor-pointer">
                   <Volume2 className="w-4 h-4" />
-                  <span>फिर से सुनें (Read Out)</span>
+                  <span>{t('assistant.read_again')}</span>
                 </button>
               )}
             </div>
@@ -117,7 +116,7 @@ export const AssistantPage: React.FC = () => {
 
         {loading && (
           <div className="p-4 bg-amber-50 rounded-2xl text-amber-900 font-bold animate-pulse">
-            पंचायत मित्र उत्तर सोच रहा है...
+            {t('assistant.thinking')}
           </div>
         )}
       </div>
@@ -129,12 +128,12 @@ export const AssistantPage: React.FC = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          placeholder="बोलें या सवाल लिखें... (उदा: आय प्रमाणपत्र चाहिए)"
+          placeholder={t('assistant.placeholder')}
           className="flex-1 p-4 rounded-2xl border-2 border-slate-300 font-bold text-lg bg-white"
         />
         <button
           onClick={() => handleSend()}
-          className="bg-saffron-600 hover:bg-saffron-700 text-white p-4 rounded-2xl font-bold min-w-[60px] flex items-center justify-center shadow-lg"
+          className="bg-saffron-600 hover:bg-saffron-700 text-white p-4 rounded-2xl font-bold min-w-[60px] flex items-center justify-center shadow-lg cursor-pointer"
         >
           <Send className="w-6 h-6" />
         </button>

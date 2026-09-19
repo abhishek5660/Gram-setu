@@ -1,7 +1,7 @@
 {
   "app_name": "ग्राम सेतु",
   "app_subtitle": "एआई-संचालित डिजिटल पंचायत सेवा",
-  "govt_banner": "रामपुर (Rampur Panchayat) • भारत सरकार / राज्य शासन",
+  "govt_banner": "ग्राम रामपुर (Rampur Panchayat) • भारत सरकार / राज्य शासन",
   "digital_panchayat": "डिजिटल ग्राम पंचायत",
   "bada_text": "बड़ा पाठ (A+)",
   "bada_text_on": "बड़ा पाठ (ON)",
@@ -21,7 +21,7 @@
     "payments": "टैक्स व शुल्क",
     "admin": "सचिव डैशबोर्ड",
     "logout": "लॉगआउट",
-    "login": "लॉगिन करें"
+    "login": "लॉगइन करें"
   },
 
   "auth": {
@@ -30,26 +30,34 @@
     "enter_phone": "अपना 10-अंकों का मोबाइल नंबर दर्ज करें",
     "phone_placeholder": "उदा: 9876543210",
     "send_otp": "ओटीपी प्राप्त करें (Send OTP)",
+    "sending_otp": "ओटीपी भेजा जा रहा है...",
     "enter_otp": "4 या 6 अंकों का ओटीपी दर्ज करें",
     "verify_otp": "ओटीपी सत्यापित करें (Verify OTP)",
+    "verifying_otp": "सत्यापित हो रहा है...",
     "demo_hint": "डेमो के लिए ओटीपी 123456 का उपयोग करें",
     "quick_login_senior": "रमेश प्रसाद काका (वरिष्ठ नागरिक - 70 वर्ष)",
     "senior_desc": "वरिष्ठ नागरिक सुगम मोड + विशाल टाइल्स",
     "quick_login_admin": "श्री रामेश्वर शर्मा (ग्राम पंचायत सचिव)",
     "admin_desc": "प्रशासनिक समीक्षा, प्रमाण पत्र जारी करना",
-    "quick_demo_title": "⚡ त्वरित डेमो टेस्ट (Instant Quick Demo Logins)"
+    "quick_demo_title": "⚡ त्वरित डेमो टेस्ट (Instant Quick Demo Logins)",
+    "change_phone": "← दूसरा नंबर दर्ज करें",
+    "error_invalid_phone": "कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें",
+    "error_enter_otp": "कृपया ओटीपी दर्ज करें"
   },
 
   "profile": {
     "setup_title": "आपकी प्रोफाइल जानकारी",
     "setup_subtitle": "अपनी जानकारी भरें या अद्यतन करें",
     "name": "आपका पूरा नाम",
+    "name_placeholder": "उदा: रमेश प्रसाद काका",
     "age": "आपकी उम्र (वर्षों में)",
     "village": "आपके गांव का नाम",
     "ward": "वार्ड संख्या / मजरा",
     "aadhaar": "आधार कार्ड संख्या (सुरक्षित व गुप्त रखा जाता है)",
+    "secured_badge": "🔒 सुरक्षित व गोपनीय",
     "senior_auto_detected": "आपकी आयु 60 वर्ष से अधिक है! 'वरिष्ठ नागरिक मोड' स्वतः सक्रिय कर दिया गया है।",
-    "save": "प्रोफाइल सहेजें (Save Profile)"
+    "save": "प्रोफाइल सहेजें (Save Profile)",
+    "saving": "सहेजा जा रहा है..."
   },
 
   "voice": {
@@ -57,7 +65,10 @@
     "listening": "सुन रहा हूँ... बोलिए",
     "stop": "आवाज रोकें (Stop Audio)",
     "speak_again": "फिर से सुनें",
-    "floating_label": "बोलकर कहें (Voice AI)"
+    "floating_label": "बोलकर कहें (Voice AI)",
+    "ai_modal_title": "आपकी आवाज सुनी जा रही है...",
+    "ai_modal_sub": "\"आय प्रमाण पत्र चाहिए\", \"लाइट खराब है\", या \"पेंशन स्टेटस\" बोलें",
+    "transcript_placeholder": "बोलिए, मैं सुन रहा हूँ..."
   },
 
   "home": {
@@ -93,12 +104,22 @@
     "step2": "2. मार्गदर्शन आवेदन फॉर्म",
     "income": "वार्षिक आय (Annual Income ₹)",
     "purpose": "आवेदन का कारण / उद्देश्य",
+    "purpose_default": "वृद्धावस्था पेंशन",
     "auto_link": "लॉकर से आधार कार्ड स्वतः जोड़ दिया गया है।",
     "submit": "आवेदन जमा करें (Submit Application)",
+    "submitting": "आवेदन जमा हो रहा है...",
     "success_title": "आवेदन सफलतापूर्वक जमा हो गया!",
     "tracking_id": "आपकी ट्रैकिंग आईडी:",
     "success_sub": "ग्राम पंचायत सचिव 48 घंटे के भीतर आपके आवेदन की समीक्षा करेंगे।",
-    "apply_another": "एक और आवेदन करें"
+    "apply_another": "एक और आवेदन करें",
+    "services": {
+      "income_certificate": "आय प्रमाण पत्र",
+      "birth_certificate": "जन्म प्रमाण पत्र",
+      "domicile_certificate": "निवास प्रमाण पत्र",
+      "caste_certificate": "जाति प्रमाण पत्र",
+      "death_certificate": "मृत्यु प्रमाण पत्र",
+      "bpl_certificate": "बीपीएल प्रमाण पत्र"
+    }
   },
 
   "complaints": {
@@ -108,11 +129,13 @@
     "photo_button": "📷 फोटो खींचें",
     "voice_button": "🎙️ आवाज रिकॉर्ड करें",
     "submit": "शिकायत दर्ज करें (Submit Complaint)",
+    "submitting": "शिकायत दर्ज हो रही है...",
     "success_title": "आपकी शिकायत सफलता से दर्ज हो गई!",
     "tracking_id": "शिकायत क्रमांक:",
     "ai_categorization": "🤖 AI वर्गीकरण:",
     "assigned_dept": "🏢 आवंटित विभाग:",
-    "another_complaint": "दूसरी शिकायत दर्ज करें"
+    "another_complaint": "दूसरी शिकायत दर्ज करें",
+    "default_text": "वार्ड 4 में स्ट्रीट लाइट पिछले 3 दिनों से बंद है।"
   },
 
   "schemes": {
@@ -140,7 +163,9 @@
     "subtitle": "आपकी भाषा में बोलने वाला पंचायत डिजिटल मित्र",
     "read_again": "फिर से सुनें (Read Out)",
     "thinking": "पंचायत मित्र उत्तर सोच रहा है...",
-    "placeholder": "बोलें या सवाल लिखें... (उदा: आय प्रमाणपत्र चाहिए)"
+    "placeholder": "बोलें या सवाल लिखें... (उदा: आय प्रमाणपत्र चाहिए)",
+    "stop_voice": "आवाज रोकें",
+    "initial_greeting": "नमस्ते! मैं पंचायत मित्र हूँ। मैं आय प्रमाण पत्र, पेंशन, शिकायत और सरकारी योजनाओं में आपकी सहायता कर सकता हूँ। आप क्या करना चाहते हैं?"
   },
 
   "admin": {
@@ -157,6 +182,16 @@
     "col_action": "कार्रवाई (Action)",
     "approve_qr": "स्वीकृत करें & QR जारी करें",
     "qr_issued": "QR डिजिटल प्रमाणपत्र जारी"
+  },
+
+  "info": {
+    "title": "🏛️ ग्राम पंचायत निर्देशिका एवं सूचनाएं",
+    "subtitle": "1-टैप में पंचायत अधिकारियों व आपातकालीन सेवाओं को कॉल करें",
+    "emergency_title": "📞 1-टैप आपातकालीन संपर्क (Direct Call)",
+    "notices_title": "📢 सार्वजनिक सूचनाएं एवं ग्राम सभा",
+    "call_button": "कॉल करें",
+    "listen_button": "सुनें",
+    "agenda_label": "📋 ग्राम सभा एजेंडा:"
   },
 
   "payments": {
