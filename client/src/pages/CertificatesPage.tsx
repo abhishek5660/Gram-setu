@@ -1,20 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
-import { FileText, Camera, Upload, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Camera } from 'lucide-react';
+
+type FieldType = 'text' | 'number' | 'date';
+
+interface FieldDef {
+  key: string;
+  labelKey: string;
+  type: FieldType;
+  default: string;
+}
+
+// Each certificate type asks only for the information actually relevant to it.
+const SERVICE_FIELDS: Record<string, FieldDef[]> = {
+  income_certificate: [
+    { key: 'annualIncome', labelKey: 'certificates.income', type: 'number', default: '96000' },
+    { key: 'purpose', labelKey: 'certificates.purpose', type: 'text', default: '' },
+  ],
+  birth_certificate: [
+    { key: 'childName', labelKey: 'certificates.field_child_name', type: 'text', default: '' },
+    { key: 'dob', labelKey: 'certificates.field_dob', type: 'date', default: '' },
+    { key: 'parentsName', labelKey: 'certificates.field_parents_name', type: 'text', default: '' },
+    { key: 'birthPlace', labelKey: 'certificates.field_birth_place', type: 'text', default: '' },
+  ],
+  domicile_certificate: [
+    { key: 'yearsResided', labelKey: 'certificates.field_years_resided', type: 'number', default: '' },
+    { key: 'address', labelKey: 'certificates.field_address', type: 'text', default: '' },
+  ],
+  caste_certificate: [
+    { key: 'casteCategory', labelKey: 'certificates.field_caste_category', type: 'text', default: '' },
+    { key: 'community', labelKey: 'certificates.field_community', type: 'text', default: '' },
+  ],
+  death_certificate: [
+    { key: 'deceasedName', labelKey: 'certificates.field_deceased_name', type: 'text', default: '' },
+    { key: 'dateOfDeath', labelKey: 'certificates.field_date_of_death', type: 'date', default: '' },
+    { key: 'causeOfDeath', labelKey: 'certificates.field_cause_of_death', type: 'text', default: '' },
+  ],
+  bpl_certificate: [
+    { key: 'annualIncome', labelKey: 'certificates.income', type: 'number', default: '96000' },
+    { key: 'familyMembers', labelKey: 'certificates.field_family_members', type: 'number', default: '' },
+  ],
+};
 
 export const CertificatesPage: React.FC = () => {
-  const { user, token, t, speak, isHighContrast } = useAccessibility();
+  const { user, token, t, speak } = useAccessibility();
   const [searchParams] = useSearchParams();
   const initialService = searchParams.get('service') || 'income_certificate';
 
   const [selectedService, setSelectedService] = useState<string>(initialService);
-  const [income, setIncome] = useState<string>('96000');
-  const [purpose, setPurpose] = useState<string>(t('certificates.purpose_default'));
   const [appliedBy, setAppliedBy] = useState<string>('Self');
   const [loading, setLoading] = useState<boolean>(false);
   const [submittedApp, setSubmittedApp] = useState<any>(null);
+
+  const buildInitialValues = (serviceId: string) => {
+    const fields = SERVICE_FIELDS[serviceId] || [];
+    const values: Record<string, string> = {};
+    fields.forEach((f) => { values[f.key] = f.default; });
+    return values;
+  };
+
+  const [formValues, setFormValues] = useState<Record<string, string>>(() => buildInitialValues(initialService));
+
+  // Reset the form fields whenever the selected certificate type changes,
+  // so a leftover "income" value doesn't silently ride along into a Birth Certificate.
+  useEffect(() => {
+    setFormValues(buildInitialValues(selectedService));
+  }, [selectedService]);
 
   const services = [
     { id: 'income_certificate', title: t('certificates.services.income_certificate'), icon: '📜' },
@@ -24,6 +77,8 @@ export const CertificatesPage: React.FC = () => {
     { id: 'death_certificate', title: t('certificates.services.death_certificate'), icon: '🕊️' },
     { id: 'bpl_certificate', title: t('certificates.services.bpl_certificate'), icon: '🌾' },
   ];
+
+  const activeFields = SERVICE_FIELDS[selectedService] || [];
 
   const handleSubmit = async () => {
     if (!user) return alert(t('nav.login'));
@@ -40,7 +95,7 @@ export const CertificatesPage: React.FC = () => {
           userId: user.id,
           serviceType: selectedService,
           serviceName: services.find(s => s.id === selectedService)?.title || selectedService,
-          formData: { annualIncome: income, purpose },
+          formData: formValues,
           appliedBy
         })
       });
@@ -108,31 +163,27 @@ export const CertificatesPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Application Form */}
+          {/* Application Form — fields are specific to the selected certificate type */}
           <div className="md:col-span-2 bg-white rounded-3xl p-6 border-4 border-saffron-500/30 shadow-xl space-y-6">
             <h2 className="text-xl font-black text-slate-900 border-b pb-3">
               {t('certificates.step2')} ({services.find(s => s.id === selectedService)?.title})
             </h2>
 
-            <div>
-              <label className="block font-bold text-slate-800 text-base mb-2">{t('certificates.income')}</label>
-              <input
-                type="number"
-                value={income}
-                onChange={(e) => setIncome(e.target.value)}
-                className="w-full p-3.5 rounded-xl border-2 border-slate-300 font-bold text-xl bg-slate-50 min-h-[52px]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-800 text-base mb-2">{t('certificates.purpose')}</label>
-              <input
-                type="text"
-                value={purpose}
-                onChange={(e) => setPurpose(e.target.value)}
-                className="w-full p-3.5 rounded-xl border-2 border-slate-300 font-bold text-lg bg-slate-50 min-h-[52px]"
-              />
-            </div>
+            {activeFields.map((field) => (
+              <div key={field.key}>
+                <label className="block font-bold text-slate-800 text-base mb-2">
+                  {t(field.labelKey)}
+                </label>
+                <input
+                  type={field.type}
+                  value={formValues[field.key] ?? ''}
+                  onChange={(e) =>
+                    setFormValues((prev) => ({ ...prev, [field.key]: e.target.value }))
+                  }
+                  className="w-full p-3.5 rounded-xl border-2 border-slate-300 font-bold text-xl bg-slate-50 min-h-[52px]"
+                />
+              </div>
+            ))}
 
             {/* Document Upload Hint */}
             <div className="p-4 bg-amber-50 rounded-2xl border-2 border-dashed border-amber-300 text-amber-900 flex items-center justify-between">
