@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
+import { api } from '../services/api';
 import { User, MapPin, Calendar, CreditCard, HeartHandshake, CheckCircle2, Volume2 } from 'lucide-react';
 
 export const ProfileSetupPage: React.FC = () => {
-  const { user, setUser, token, t, speak, isHighContrast } = useAccessibility();
+  const { user, setUser, t, speak, isHighContrast } = useAccessibility();
   const navigate = useNavigate();
 
   const [name, setName] = useState<string>(user?.name || '');
@@ -33,30 +34,21 @@ export const ProfileSetupPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          age: numAge,
-          village,
-          ward,
-          aadhaarNumber: aadhaar
-        })
+      const data = await api.put('/auth/profile', {
+        name,
+        age: numAge,
+        village,
+        ward,
+        aadhaarNumber: aadhaar
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        setUser(data.user);
-        setMessage(data.message || 'Profile saved successfully');
-        speak(data.message || 'Profile saved');
-        setTimeout(() => navigate('/home'), 1500);
-      }
-    } catch (e) {
+      setUser(data.user);
+      setMessage(data.message || 'Profile saved successfully');
+      speak(data.message || 'Profile saved');
+      setTimeout(() => navigate('/home'), 1500);
+    } catch (e: any) {
       console.error(e);
+      alert(e.message);
     } finally {
       setLoading(false);
     }

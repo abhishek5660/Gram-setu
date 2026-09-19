@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
+import { api } from '../services/api';
 import { Phone, ShieldCheck, KeyRound, UserCheck, Sparkles, Volume2 } from 'lucide-react';
 
 export const AuthPage: React.FC = () => {
@@ -26,22 +27,12 @@ export const AuthPage: React.FC = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        setStep('OTP');
-        setOtp('123456'); // Auto-fill for developer demo convenience
-        speak('OTP sent! Use demo OTP 1 2 3 4 5 6');
-      } else {
-        setError(data.error || 'Error sending OTP');
-      }
-    } catch (err) {
-      setError('Server connection error');
+      const data = await api.post('/auth/send-otp', { phone });
+      setStep('OTP');
+      setOtp('123456'); // Auto-fill for developer demo convenience
+      speak('OTP sent! Use demo OTP 1 2 3 4 5 6');
+    } catch (err: any) {
+      setError(err.message || 'Error sending OTP');
     } finally {
       setLoading(false);
     }
@@ -57,28 +48,18 @@ export const AuthPage: React.FC = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code: otp, rolePreference })
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        setToken(data.token);
-        setUser(data.user);
-        speak(`Welcome ${data.user.name}!`);
-        
-        if (data.user.role === 'ADMIN') {
-          navigate('/admin');
-        } else {
-          navigate('/home');
-        }
+      const data = await api.post('/auth/verify-otp', { phone, code: otp, rolePreference });
+      setToken(data.token);
+      setUser(data.user);
+      speak(`Welcome ${data.user.name}!`);
+      
+      if (data.user.role === 'ADMIN') {
+        navigate('/admin');
       } else {
-        setError(data.error || 'Invalid OTP');
+        navigate('/home');
       }
-    } catch (err) {
-      setError('Verification failed');
+    } catch (err: any) {
+      setError(err.message || 'Invalid OTP');
     } finally {
       setLoading(false);
     }
@@ -88,24 +69,17 @@ export const AuthPage: React.FC = () => {
   const handleDemoLogin = async (demoPhone: string, role: string) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: demoPhone, code: '123456', rolePreference: role })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setToken(data.token);
-        setUser(data.user);
-        speak(`Welcome ${data.user.name}!`);
-        if (data.user.role === 'ADMIN') {
-          navigate('/admin');
-        } else {
-          navigate('/home');
-        }
+      const data = await api.post('/auth/verify-otp', { phone: demoPhone, code: '123456', rolePreference: role });
+      setToken(data.token);
+      setUser(data.user);
+      speak(`Welcome ${data.user.name}!`);
+      if (data.user.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setLoading(false);
     }
@@ -203,7 +177,7 @@ export const AuthPage: React.FC = () => {
 
             <button
               onClick={() => setStep('PHONE')}
-              className="w-full text-center text-slate-500 hover:text-saffron-600 font-bold text-sm py-2"
+              className="w-full text-center text-slate-500 hover:text-saffron-600 font-bold text-sm py-2 cursor-pointer"
             >
               {t('auth.change_phone')}
             </button>
