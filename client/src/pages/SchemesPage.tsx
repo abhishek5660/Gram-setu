@@ -4,7 +4,7 @@ import { BigButton } from '../components/common/BigButton';
 import { Sparkles } from 'lucide-react';
 
 export const SchemesPage: React.FC = () => {
-  const { user, t, speak } = useAccessibility();
+  const { user, t, speak, language } = useAccessibility();
   const [schemes, setSchemes] = useState<any[]>([]);
   const [eligibilityResults, setEligibilityResults] = useState<any[]>([]);
   const [checking, setChecking] = useState<boolean>(false);
@@ -31,7 +31,7 @@ export const SchemesPage: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setEligibilityResults(data.results || []);
-        speak(`Eligible for ${data.results.length} schemes!`);
+        speak(language === 'hi' ? `बधाई हो! आप ${data.results.length} योजनाओं के लिए पात्र हैं।` : `Congratulations! You qualify for ${data.results.length} schemes.`);
       }
     } catch (e) {
       console.error(e);
@@ -67,7 +67,7 @@ export const SchemesPage: React.FC = () => {
           {eligibilityResults.map((res, i) => (
             <div key={i} className="p-4 bg-white rounded-2xl border-2 border-emerald-300 font-bold space-y-2">
               <div className="text-lg text-emerald-900 font-black">{res.schemeTitle}</div>
-              <p className="text-slate-700 text-sm">{res.reasonHindi}</p>
+              <p className="text-slate-700 text-sm">{language === 'hi' ? res.reasonHindi : res.reasonEnglish}</p>
               <div className="text-xs text-saffron-700 bg-saffron-50 p-2 rounded-xl border border-saffron-200">
                 {t('schemes.docs_required')} {res.missingDocs.join(', ')}
               </div>
@@ -78,22 +78,27 @@ export const SchemesPage: React.FC = () => {
 
       {/* Schemes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {schemes.map((scheme) => (
-          <div key={scheme.id} className="bg-white rounded-3xl p-6 border-4 border-saffron-500/30 shadow-xl space-y-4">
-            <div className="flex justify-between items-start">
-              <h3 className="text-xl font-black text-slate-900">{scheme.titleHindi}</h3>
-              <span className="bg-amber-100 text-saffron-800 font-extrabold text-xs px-3 py-1 rounded-full border border-amber-300">
-                {scheme.benefitAmount}
-              </span>
+        {schemes.map((scheme) => {
+          const displayTitle = language === 'hi' ? scheme.titleHindi : (scheme.title || scheme.titleHindi);
+          const displayDesc = language === 'hi' ? scheme.descriptionHindi : (scheme.description || scheme.descriptionHindi);
+
+          return (
+            <div key={scheme.id} className="bg-white rounded-3xl p-6 border-4 border-saffron-500/30 shadow-xl space-y-4">
+              <div className="flex justify-between items-start">
+                <h3 className="text-xl font-black text-slate-900">{displayTitle}</h3>
+                <span className="bg-amber-100 text-saffron-800 font-extrabold text-xs px-3 py-1 rounded-full border border-amber-300">
+                  {scheme.benefitAmount}
+                </span>
+              </div>
+              <p className="text-slate-600 text-sm font-medium">{displayDesc}</p>
+              <div className="p-3 bg-slate-50 rounded-2xl text-xs font-bold text-slate-700 space-y-1">
+                <div><b>{t('schemes.eligibility_label')}</b> {scheme.eligibilityCriteria}</div>
+                <div><b>{t('schemes.docs_required')}</b> {scheme.requiredDocs}</div>
+              </div>
+              <BigButton label={t('schemes.apply_now')} onClick={() => speak(displayTitle)} variant="primary" />
             </div>
-            <p className="text-slate-600 text-sm font-medium">{scheme.descriptionHindi}</p>
-            <div className="p-3 bg-slate-50 rounded-2xl text-xs font-bold text-slate-700 space-y-1">
-              <div><b>{t('schemes.eligibility_label')}</b> {scheme.eligibilityCriteria}</div>
-              <div><b>{t('schemes.docs_required')}</b> {scheme.requiredDocs}</div>
-            </div>
-            <BigButton label={t('schemes.apply_now')} onClick={() => speak(scheme.titleHindi)} variant="primary" />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

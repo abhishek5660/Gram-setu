@@ -24,7 +24,7 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-2 border-saffron-500/30 shadow-md">
       {/* Top Banner for Government / Village Identity */}
-      <div className="bg-gradient-to-r from-saffron-600 via-amber-600 to-govGreen-700 text-white text-xs md:text-sm py-1 px-4 flex justify-between items-center font-medium">
+      <div className="bg-gradient-to-r from-saffron-600 via-amber-600 to-govGreen-700 text-white text-xs md:text-sm py-1.5 px-4 flex justify-between items-center font-medium">
         <div className="flex items-center gap-2">
           <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">
             {t('digital_panchayat')}
@@ -33,20 +33,36 @@ export const Header: React.FC = () => {
         </div>
 
         {/* Quick Accessibility Bar */}
-        <div className="flex items-center gap-3">
-          {/* Language Toggle Button */}
-          <button
-            onClick={() => {
-              const next = language === 'hi' ? 'en' : 'hi';
-              setLanguage(next);
-              speak(next === 'hi' ? 'भाषा हिंदी में बदली गई' : 'Language switched to English');
-            }}
-            className="flex items-center gap-1.5 bg-black/30 hover:bg-black/40 text-amber-200 border border-amber-300/40 px-2.5 py-0.5 rounded font-bold transition-all text-xs shadow-sm cursor-pointer"
-            title="Language Switcher"
-          >
-            <Languages className="w-3.5 h-3.5 text-amber-300" />
-            <span>{t('language_name')}</span>
-          </button>
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Explicit 2-Segment Language Switcher Pill */}
+          <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-amber-300/50 text-xs font-bold shadow-inner">
+            <button
+              onClick={() => {
+                setLanguage('hi');
+                speak('भाषा हिंदी में बदली गई');
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                language === 'hi'
+                  ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
+                  : 'text-amber-100 hover:text-white'
+              }`}
+            >
+              हिंदी
+            </button>
+            <button
+              onClick={() => {
+                setLanguage('en');
+                speak('Language switched to English');
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                language === 'en'
+                  ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
+                  : 'text-amber-100 hover:text-white'
+              }`}
+            >
+              English
+            </button>
+          </div>
 
           {/* Bada Text Toggle Button */}
           <button
@@ -54,7 +70,7 @@ export const Header: React.FC = () => {
               toggleBadaText();
               speak(isBadaText ? 'Normal Text Mode' : 'Bada Text Mode Enabled');
             }}
-            className={`flex items-center gap-1 px-2.5 py-0.5 rounded font-bold text-xs transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               isBadaText ? 'bg-amber-300 text-black ring-2 ring-yellow-400' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
@@ -68,7 +84,7 @@ export const Header: React.FC = () => {
               toggleHighContrast();
               speak(isHighContrast ? 'Normal Contrast' : 'High Contrast Enabled');
             }}
-            className={`hidden md:flex items-center gap-1 px-2 py-0.5 rounded font-bold text-xs cursor-pointer ${
+            className={`hidden md:flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs cursor-pointer ${
               isHighContrast ? 'bg-yellow-400 text-black' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
