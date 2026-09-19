@@ -9,7 +9,7 @@
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "build": "npm run build --prefix server && npm run build --prefix client",
-    "vercel-build": "npm run install:all && npm run build --prefix client && npx prisma db push --schema=server/prisma/schema.prisma && npx tsx server/prisma/seed.ts",
+    "vercel-build": "npm run install:all && npm run build --prefix client && npx prisma generate --schema=server/prisma/schema.prisma && npx prisma db push --schema=server/prisma/schema.prisma && npx tsx server/prisma/seed.ts",
     "db:push": "npm run db:push --prefix server",
     "db:seed": "npm run db:seed --prefix server"
   },
