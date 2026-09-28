@@ -31,7 +31,7 @@ export const SchemesPage: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setEligibilityResults(data.results || []);
-        speak(language === 'hi' ? `बधाई हो! आप ${data.results.length} योजनाओं के लिए पात्र हैं।` : `Congratulations! You qualify for ${data.results.length} schemes.`);
+        speak(t('schemes.eligible_count_speech').replace('{count}', String(data.results.length)));
       }
     } catch (e) {
       console.error(e);

@@ -30,7 +30,7 @@ export const AuthPage: React.FC = () => {
       const data = await api.post('/auth/send-otp', { phone });
       setStep('OTP');
       setOtp('123456'); // Auto-fill for developer demo convenience
-      speak('OTP sent! Use demo OTP 1 2 3 4 5 6');
+      speak(t('auth.otp_sent_speech'));
     } catch (err: any) {
       setError(err.message || 'Error sending OTP');
     } finally {
@@ -51,7 +51,7 @@ export const AuthPage: React.FC = () => {
       const data = await api.post('/auth/verify-otp', { phone, code: otp, rolePreference });
       setToken(data.token);
       setUser(data.user);
-      speak(`Welcome ${data.user.name}!`);
+      speak(`${t('auth.welcome_speech')} ${data.user.name}!`);
       
       if (data.user.role === 'ADMIN') {
         navigate('/admin');
@@ -72,7 +72,7 @@ export const AuthPage: React.FC = () => {
       const data = await api.post('/auth/verify-otp', { phone: demoPhone, code: '123456', rolePreference: role });
       setToken(data.token);
       setUser(data.user);
-      speak(`Welcome ${data.user.name}!`);
+      speak(`${t('auth.welcome_speech')} ${data.user.name}!`);
       if (data.user.role === 'ADMIN') {
         navigate('/admin');
       } else {

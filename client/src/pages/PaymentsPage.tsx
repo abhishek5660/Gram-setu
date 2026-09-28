@@ -25,7 +25,7 @@ export const PaymentsPage: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'PAID', receiptId: data.payment.receiptId } : p));
-        speak(`Payment of ₹${amount} successful!`);
+        speak(t('payments.payment_success_speech').replace('{amount}', String(amount)));
       }
     } catch (e) {
       console.error(e);

@@ -42,7 +42,9 @@
     "quick_demo_title": "⚡ ઝડપી ડેમો લોગિન",
     "change_phone": "← અલગ નંબર દાખલ કરો",
     "error_invalid_phone": "કૃપા કરી માન્ય 10-અંકનો મોબાઇલ નંબર દાખલ કરો",
-    "error_enter_otp": "કૃપા કરી OTP દાખલ કરો"
+    "error_enter_otp": "કૃપા કરી OTP દાખલ કરો",
+    "otp_sent_speech": "OTP મોકલાઈ ગયો છે. ડેમો OTP 1 2 3 4 5 6 આપમેળે ભરાઈ ગયો છે.",
+    "welcome_speech": "સ્વાગત છે"
   },
 
   "profile": {
@@ -57,7 +59,8 @@
     "secured_badge": "🔒 સુરક્ષિત અને ગોપનીય",
     "senior_auto_detected": "ઉંમર 60+ મળી! 'વરિષ્ઠ નાગરિક મોડ' આપમેળે સક્રિય કરવામાં આવ્યો છે.",
     "save": "પ્રોફાઇલ સાચવો",
-    "saving": "સાચવી રહ્યા છીએ..."
+    "saving": "સાચવી રહ્યા છીએ...",
+    "saved_speech": "પ્રોફાઇલ સફળતાપૂર્વક સાચવવામાં આવી."
   },
 
   "voice": {
@@ -167,7 +170,8 @@
     "results_title": "🎉 AI પાત્રતા તપાસ પરિણામો",
     "docs_required": "📄 જરૂરી દસ્તાવેજો:",
     "eligibility_label": "પાત્રતા:",
-    "apply_now": "હમણાં જ સીધી અરજી કરો"
+    "apply_now": "હમણાં જ સીધી અરજી કરો",
+    "eligible_count_speech": "અભિનંદન! તમે {count} યોજનાઓ માટે પાત્ર છો."
   },
 
   "documents": {
@@ -212,7 +216,12 @@
     "notices_title": "📢 જાહેર સૂચનાઓ અને ગ્રામ સભા બેઠકો",
     "call_button": "હમણાં કૉલ કરો",
     "listen_button": "સાંભળો",
-    "agenda_label": "📋 ગ્રામ સભા કાર્યસૂચિ:"
+    "agenda_label": "📋 ગ્રામ સભા કાર્યસૂચિ:",
+    "calling_speech": "કૉલ કરી રહ્યા છીએ",
+    "contact_asha": "આશા વર્કર",
+    "contact_anm": "એએનએમ આરોગ્ય કેન્દ્ર",
+    "contact_police": "ગામ પોલીસ સ્ટેશન",
+    "contact_ambulance": "કટોકટી એમ્બ્યુલન્સ"
   },
 
   "payments": {
@@ -223,6 +232,7 @@
     "receipt_id": "ડિજિટલ રસીદ નંબર:",
     "pay_now": "હમણાં ચૂકવો",
     "paying": "પ્રક્રિયા ચાલી રહી છે...",
-    "receipt_available": "ડિજિટલ રસીદ ઉપલબ્ધ"
+    "receipt_available": "ડિજિટલ રસીદ ઉપલબ્ધ",
+    "payment_success_speech": "₹{amount} ની ચુકવણી સફળ થઈ."
   }
 }

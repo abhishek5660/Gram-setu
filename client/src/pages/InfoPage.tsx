@@ -16,10 +16,10 @@ export const InfoPage: React.FC = () => {
   const contacts = [
     { title: t('home.sarpanch'), name: 'Smt. Malti Devi', phone: '9876543210', icon: '👑' },
     { title: t('home.secretary'), name: 'Shri Rameshwar Sharma', phone: '9999999999', icon: '🏛️' },
-    { title: 'ASHA Worker', name: 'Sunita Devi', phone: '9123456789', icon: '👩‍⚕️' },
-    { title: 'ANM Health Center', name: 'Dr. Rekha Verma', phone: '9812345678', icon: '🏥' },
-    { title: 'Village Police Station', name: 'In-charge Rampur', phone: '112', icon: '🚔' },
-    { title: 'Emergency Ambulance', name: '108 Ambulance Service', phone: '108', icon: '🚑' },
+    { title: t('info.contact_asha'), name: 'Sunita Devi', phone: '9123456789', icon: '👩‍⚕️' },
+    { title: t('info.contact_anm'), name: 'Dr. Rekha Verma', phone: '9812345678', icon: '🏥' },
+    { title: t('info.contact_police'), name: 'In-charge Rampur', phone: '112', icon: '🚔' },
+    { title: t('info.contact_ambulance'), name: '108 Ambulance Service', phone: '108', icon: '🚑' },
   ];
 
   return (
@@ -47,7 +47,7 @@ export const InfoPage: React.FC = () => {
             <a
               href={`tel:${c.phone}`}
               data-voice-skip="true"
-              onClick={() => speak(`Calling ${c.title}`)}
+              onClick={() => speak(`${t('info.calling_speech')} ${c.title}`)}
               className="bg-govGreen-600 hover:bg-govGreen-700 text-white font-bold px-4 py-2.5 rounded-2xl text-xs flex items-center gap-1.5 shadow"
             >
               <Phone className="w-4 h-4" />

@@ -42,7 +42,9 @@
     "quick_demo_title": "⚡ त्वरित डेमो टेस्ट (Instant Quick Demo Logins)",
     "change_phone": "← दूसरा नंबर दर्ज करें",
     "error_invalid_phone": "कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें",
-    "error_enter_otp": "कृपया ओटीपी दर्ज करें"
+    "error_enter_otp": "कृपया ओटीपी दर्ज करें",
+    "otp_sent_speech": "ओटीपी भेज दिया गया है। डेमो ओटीपी 1 2 3 4 5 6 अपने आप भर दिया गया है।",
+    "welcome_speech": "स्वागत है"
   },
 
   "profile": {
@@ -57,7 +59,8 @@
     "secured_badge": "🔒 सुरक्षित व गोपनीय",
     "senior_auto_detected": "आपकी आयु 60 वर्ष से अधिक है! 'वरिष्ठ नागरिक मोड' स्वतः सक्रिय कर दिया गया है।",
     "save": "प्रोफाइल सहेजें (Save Profile)",
-    "saving": "सहेजा जा रहा है..."
+    "saving": "सहेजा जा रहा है...",
+    "saved_speech": "प्रोफाइल सफलतापूर्वक सहेजी गई।"
   },
 
   "voice": {
@@ -167,7 +170,8 @@
     "results_title": "🎉 AI पात्रता जांच परिणाम",
     "docs_required": "📄 आवश्यक कागजात:",
     "eligibility_label": "पात्रता:",
-    "apply_now": "सीधा आवेदन करें (Apply Now)"
+    "apply_now": "सीधा आवेदन करें (Apply Now)",
+    "eligible_count_speech": "बधाई हो! आप {count} योजनाओं के लिए पात्र हैं।"
   },
 
   "documents": {
@@ -212,7 +216,12 @@
     "notices_title": "📢 सार्वजनिक सूचनाएं एवं ग्राम सभा",
     "call_button": "कॉल करें",
     "listen_button": "सुनें",
-    "agenda_label": "📋 ग्राम सभा एजेंडा:"
+    "agenda_label": "📋 ग्राम सभा एजेंडा:",
+    "calling_speech": "फोन किया जा रहा है",
+    "contact_asha": "आशा कार्यकर्ता",
+    "contact_anm": "एएनएम स्वास्थ्य केंद्र",
+    "contact_police": "ग्राम पुलिस चौकी",
+    "contact_ambulance": "आपातकालीन एम्बुलेंस"
   },
 
   "payments": {
@@ -223,6 +232,7 @@
     "receipt_id": "डिजिटल रसीद सं:",
     "pay_now": "अभी भुगतान करें (Pay Now)",
     "paying": "प्रक्रिया जारी...",
-    "receipt_available": "डिजिटल रसीद उपलब्ध"
+    "receipt_available": "डिजिटल रसीद उपलब्ध",
+    "payment_success_speech": "₹{amount} का भुगतान सफल रहा।"
   }
 }

@@ -85,7 +85,7 @@ export const Header: React.FC = () => {
             data-voice-skip="true"
             onClick={() => {
               toggleBadaText();
-              speak(isBadaText ? 'Normal Text Mode' : 'Bada Text Mode Enabled');
+              speak(isBadaText ? t('bada_text') : t('bada_text_on'));
             }}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               isBadaText ? 'bg-amber-300 text-black ring-2 ring-yellow-400' : 'bg-white/20 hover:bg-white/30'
@@ -100,7 +100,7 @@ export const Header: React.FC = () => {
             data-voice-skip="true"
             onClick={() => {
               toggleHighContrast();
-              speak(isHighContrast ? 'Normal Contrast' : 'High Contrast Enabled');
+              speak(isHighContrast ? t('high_contrast') : t('high_contrast_on'));
             }}
             className={`hidden md:flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs cursor-pointer ${
               isHighContrast ? 'bg-yellow-400 text-black' : 'bg-white/20 hover:bg-white/30'
@@ -144,7 +144,7 @@ export const Header: React.FC = () => {
             data-voice-skip="true"
             onClick={() => {
               toggleSeniorMode();
-              speak(!isSeniorMode ? 'Senior Citizen Mode Active' : 'Normal Mode Active');
+              speak(!isSeniorMode ? t('senior_mode_on') : t('senior_mode'));
             }}
             className={`px-3 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
               isSeniorMode 

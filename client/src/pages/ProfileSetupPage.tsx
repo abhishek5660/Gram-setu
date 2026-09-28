@@ -43,8 +43,9 @@ export const ProfileSetupPage: React.FC = () => {
       });
 
       setUser(data.user);
-      setMessage(data.message || 'Profile saved successfully');
-      speak(data.message || 'Profile saved');
+      const savedMessage = isSenior ? t('profile.senior_auto_detected') : t('profile.saved_speech');
+      setMessage(savedMessage);
+      speak(savedMessage);
       setTimeout(() => navigate('/home'), 1500);
     } catch (e: any) {
       console.error(e);

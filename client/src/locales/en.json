@@ -42,7 +42,9 @@
     "quick_demo_title": "⚡ Quick Instant Demo Logins",
     "change_phone": "← Enter different number",
     "error_invalid_phone": "Please enter a valid 10-digit mobile number",
-    "error_enter_otp": "Please enter OTP"
+    "error_enter_otp": "Please enter OTP",
+    "otp_sent_speech": "OTP sent. The demo OTP 1 2 3 4 5 6 has been auto-filled.",
+    "welcome_speech": "Welcome"
   },
 
   "profile": {
@@ -57,7 +59,8 @@
     "secured_badge": "🔒 Secured & Confidential",
     "senior_auto_detected": "Age 60+ detected! 'Senior Citizen Mode' is automatically enabled.",
     "save": "Save Profile",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "saved_speech": "Profile saved successfully."
   },
 
   "voice": {
@@ -167,7 +170,8 @@
     "results_title": "🎉 AI Eligibility Check Results",
     "docs_required": "📄 Required Documents:",
     "eligibility_label": "Eligibility:",
-    "apply_now": "Apply Directly Now"
+    "apply_now": "Apply Directly Now",
+    "eligible_count_speech": "Congratulations! You qualify for {count} schemes."
   },
 
   "documents": {
@@ -212,7 +216,12 @@
     "notices_title": "📢 Public Notices & Gram Sabha Meetings",
     "call_button": "Call Now",
     "listen_button": "Listen",
-    "agenda_label": "📋 Gram Sabha Agenda:"
+    "agenda_label": "📋 Gram Sabha Agenda:",
+    "calling_speech": "Calling",
+    "contact_asha": "ASHA Worker",
+    "contact_anm": "ANM Health Center",
+    "contact_police": "Village Police Station",
+    "contact_ambulance": "Emergency Ambulance"
   },
 
   "payments": {
@@ -223,6 +232,7 @@
     "receipt_id": "Digital Receipt No:",
     "pay_now": "Pay Now",
     "paying": "Processing...",
-    "receipt_available": "Digital Receipt Available"
+    "receipt_available": "Digital Receipt Available",
+    "payment_success_speech": "Payment of ₹{amount} was successful."
   }
 }
