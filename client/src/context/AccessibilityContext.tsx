@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import hiDict from '../locales/hi.json';
 import enDict from '../locales/en.json';
 import guDict from '../locales/gu.json';
@@ -11,22 +11,60 @@ const SPEECH_LANG_MAP: Record<AppLanguage, string> = {
   gu: 'gu-IN'
 };
 
-// The browser's voice list loads asynchronously (it's often empty on the very
-// first call) and not every device ships a Gujarati voice at all. We cache the
-// list once it's ready and, when the exact language has no installed voice,
-// fall back through this order so the user still hears something instead of
-// silence, rather than relying on `utterance.lang` alone to pick a voice.
-let cachedVoices: SpeechSynthesisVoice[] = [];
+// Not every device ships a Gujarati (or even Hindi) voice at all. When the
+// exact language has no installed voice, fall back through this order so the
+// user still hears something instead of silence, rather than relying on
+// `utterance.lang` alone to pick a voice.
 const VOICE_FALLBACK_ORDER: AppLanguage[] = ['gu', 'hi', 'en'];
 
-function refreshVoiceCache() {
-  if ('speechSynthesis' in window) {
-    cachedVoices = window.speechSynthesis.getVoices();
+// --- iOS/WebKit-specific Web Speech API handling ---------------------------
+// Every iOS browser (Safari, Chrome-on-iOS, WKWebView) is required by Apple to
+// use WebKit's speech engine underneath, and it behaves differently from
+// Android Chrome's in ways that matter here:
+//  1. speechSynthesis.speak() is frequently ignored until a real user gesture
+//     (tap/click) has "unlocked" the speech engine for the page session.
+//  2. `onvoiceschanged` does not reliably fire on every iOS version, so a
+//     voice list cached once (possibly before iOS finished loading voices)
+//     can stay stale/empty for the rest of the session.
+//  3. Calling speak() immediately after cancel() can silently drop the new
+//     utterance — a long-reported WebKit quirk.
+// None of this touches the Android code path, so it can't regress the
+// already-working Android Gujarati voice.
+function isIOSDevice(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const isClassicIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
+  // iPadOS 13+ reports its platform as "MacIntel" but (unlike a real Mac) has touch points.
+  const isModerniPad = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  return isClassicIOS || isModerniPad;
+}
+
+let speechUnlocked = false;
+
+// iOS requires the speech engine to be "woken up" from inside a genuine user
+// gesture before it will produce any audio. Once this silent warm-up
+// utterance has played, later speak() calls succeed even from async code
+// (e.g. after an API response resolves) for the rest of the page session.
+function unlockSpeechSynthesis() {
+  if (speechUnlocked || !('speechSynthesis' in window)) return;
+  speechUnlocked = true;
+  try {
+    window.speechSynthesis.getVoices();
+    const warmUp = new SpeechSynthesisUtterance(' ');
+    warmUp.volume = 0;
+    window.speechSynthesis.speak(warmUp);
+  } catch {
+    // Best-effort only — a real speak() call still gets its own chance to
+    // work (and to report a real error via onerror) even if this fails.
   }
 }
 
 function findVoiceForLang(langCode: string): SpeechSynthesisVoice | undefined {
-  const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+  if (!('speechSynthesis' in window)) return undefined;
+  // Always read the live list rather than a cache: onvoiceschanged isn't
+  // reliable on every iOS version, so a stale cache could permanently miss
+  // voices that finished loading later in the session.
+  const voices = window.speechSynthesis.getVoices();
   const exact = voices.find((v) => v.lang.toLowerCase() === langCode.toLowerCase());
   if (exact) return exact;
   const prefix = langCode.split('-')[0].toLowerCase();
@@ -87,6 +125,12 @@ interface AccessibilityContextType {
   listen: (onResultCallback: (text: string) => void) => void;
   stopListening: () => void;
   voiceTranscript: string;
+
+  // Set when a requested voice (currently only checked for Gujarati) isn't
+  // installed on this device, so the UI can show a clear message instead of
+  // the user just wondering why it sounds wrong or stays silent.
+  voiceWarning: string | null;
+  dismissVoiceWarning: () => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -111,19 +155,31 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [voiceTranscript, setVoiceTranscript] = useState<string>('');
+  const [voiceWarning, setVoiceWarning] = useState<string | null>(null);
+  // Tracks which language we've already shown the "voice unavailable"
+  // message for, so it appears once per language selection instead of on
+  // every single announcement, but can appear again if the user switches
+  // away and back (e.g. after installing a voice pack).
+  const warnedForLangRef = useRef<AppLanguage | null>(null);
 
-  // Chrome (and most browsers) load the TTS voice list asynchronously, so it's
-  // often still empty right after page load. Prime the cache now and keep it
-  // fresh via onvoiceschanged, so the very first speak() call already has an
-  // accurate list to pick a Gujarati/Hindi/English voice from.
+  const dismissVoiceWarning = () => setVoiceWarning(null);
+
+  // Kick off async voice-list loading early, and unlock the speech engine on
+  // the very first real user interaction anywhere on the page — required by
+  // iOS before speechSynthesis will produce any audio, including for speak()
+  // calls made later from async code (e.g. after an API response resolves).
   useEffect(() => {
     if (!('speechSynthesis' in window)) return;
-    refreshVoiceCache();
-    window.speechSynthesis.onvoiceschanged = refreshVoiceCache;
+    window.speechSynthesis.getVoices();
+
+    const unlock = () => unlockSpeechSynthesis();
+    document.addEventListener('touchend', unlock, { once: true, capture: true });
+    document.addEventListener('mousedown', unlock, { once: true, capture: true });
+    document.addEventListener('keydown', unlock, { once: true, capture: true });
     return () => {
-      if (window.speechSynthesis.onvoiceschanged === refreshVoiceCache) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
+      document.removeEventListener('touchend', unlock, true);
+      document.removeEventListener('mousedown', unlock, true);
+      document.removeEventListener('keydown', unlock, true);
     };
   }, []);
 
@@ -174,6 +230,8 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const setLanguage = (lang: AppLanguage) => {
     setLanguageState(lang);
     localStorage.setItem('gs_lang', lang);
+    // Allow a fresh "voice unavailable" check for whichever language was just selected.
+    warnedForLangRef.current = null;
   };
 
   const setToken = (t: string | null) => {
@@ -217,6 +275,11 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
+    // A tap/click reaching this function is itself a genuine user gesture —
+    // treat it as an unlock opportunity too, in case the page-wide listener
+    // hasn't fired yet (e.g. this is the very first interaction).
+    unlockSpeechSynthesis();
+
     window.speechSynthesis.cancel(); // Stop ongoing speech
 
     const targetLang = langOverride || language;
@@ -225,15 +288,22 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     utterance.lang = SPEECH_LANG_MAP[targetLang];
 
     // Explicitly pick a matching voice instead of relying on `lang` alone —
-    // on many devices (especially Windows/Android Chrome) there is no
-    // installed Gujarati voice, and browsers often stay silent rather than
-    // substituting a default one. Falling back to the closest available
-    // Indian-language voice means the user still hears the answer.
+    // on many devices there is no installed Gujarati (or even Hindi) voice,
+    // and browsers often stay silent rather than substituting a default one.
+    // Falling back to the closest available Indian-language voice means the
+    // user still hears the answer instead of nothing.
     const { voice, usedFallback } = resolveVoice(targetLang);
     if (voice) {
       utterance.voice = voice;
       if (usedFallback) {
         console.warn(`No ${SPEECH_LANG_MAP[targetLang]} voice installed on this device; using ${voice.lang} voice instead.`);
+        // Only surface a visible message for Gujarati, and only once per
+        // language selection, so switching languages doesn't spam the user
+        // with a banner on every single announcement.
+        if (targetLang === 'gu' && warnedForLangRef.current !== 'gu') {
+          warnedForLangRef.current = 'gu';
+          setVoiceWarning(guDict.voice.gu_unavailable_message);
+        }
       }
     } else {
       console.warn(`No text-to-speech voices are available on this device for "${cleanText}".`);
@@ -250,7 +320,15 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsSpeaking(false);
     };
 
-    window.speechSynthesis.speak(utterance);
+    // iOS/WebKit has a documented bug where speak() called immediately after
+    // cancel() can silently drop the new utterance. A short delay avoids it
+    // without being perceptible; Android/desktop Chrome doesn't need it, so
+    // it's scoped to iOS only to avoid changing the already-working path.
+    if (isIOSDevice()) {
+      window.setTimeout(() => window.speechSynthesis.speak(utterance), 60);
+    } else {
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const stopSpeech = () => {
@@ -328,7 +406,9 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         isListening,
         listen,
         stopListening,
-        voiceTranscript
+        voiceTranscript,
+        voiceWarning,
+        dismissVoiceWarning
       }}
     >
       {children}
