@@ -2,17 +2,29 @@ import { Router, Request, Response } from 'express';
 
 const router = Router();
 
-// Google Cloud Text-to-Speech has an explicit, well-supported gu-IN voice,
-// which is exactly what device-level speechSynthesis can't guarantee on every
-// phone (iOS in particular ships no Gujarati voice unless the user manually
-// installs one). Routing Gujarati synthesis through here makes it a
-// capability of the app itself instead of a capability of the user's device.
-const SUPPORTED_LANGS = new Set(['gu-IN', 'hi-IN', 'en-IN']);
+// Gujarati speech must not depend on the user's device having a Gujarati
+// system voice installed (iOS in particular ships none by default). This
+// generates real audio server-side instead — a capability of the app, not
+// of the device — using Google Translate's public text-to-speech endpoint
+// (translate.google.com/translate_tts). This is the same unofficial
+// mechanism the widely-used open-source `gTTS` library relies on: no API
+// key, no billing account, no signup. It's undocumented and unsupported by
+// Google (they could rate-limit or change it without notice), which is the
+// trade-off for not requiring any paid credentials; the in-memory cache
+// below keeps real request volume to it as low as possible, and the client
+// still falls back to the device voice if a request to it ever fails.
+const SUPPORTED_LANGS: Record<string, string> = {
+  'gu-IN': 'gu',
+  'hi-IN': 'hi',
+  'en-IN': 'en'
+};
 
 // In-memory cache: the vast majority of spoken text in this app is a small,
 // repeated set of button/page announcements (see VoiceAnnouncer + the fixed
-// voice.* strings), so caching by exact (lang, text) avoids re-paying for
-// the same synthesis call over and over across every user's session.
+// voice.* strings) plus a handful of canned AI replies, so caching by exact
+// (lang, text) avoids re-requesting the same audio over and over across
+// every user's session — both for speed and to minimize load on the
+// unofficial endpoint above.
 const audioCache = new Map<string, Buffer>();
 const MAX_CACHE_ENTRIES = 300;
 
@@ -24,33 +36,69 @@ function cacheSet(key: string, buf: Buffer) {
   audioCache.set(key, buf);
 }
 
-async function synthesizeWithGoogleCloudTts(text: string, languageCode: string): Promise<Buffer> {
-  const apiKey = process.env.GOOGLE_TTS_API_KEY;
-  if (!apiKey) {
-    throw Object.assign(new Error('Cloud TTS is not configured'), { code: 'NOT_CONFIGURED' });
+// The endpoint silently truncates/garbles long input, so long text is split
+// into <=200 character chunks (breaking on sentence punctuation or spaces,
+// never mid-word) and each chunk is synthesized separately; the resulting
+// MP3 buffers are concatenated, which works because they're all encoded
+// with the same settings — the same approach gTTS itself uses.
+const MAX_CHUNK_LENGTH = 200;
+
+function splitTextIntoChunks(text: string, maxLen: number): string[] {
+  const chunks: string[] = [];
+  let remaining = text.trim();
+
+  while (remaining.length > 0) {
+    if (remaining.length <= maxLen) {
+      chunks.push(remaining);
+      break;
+    }
+    const window = remaining.slice(0, maxLen);
+    const lastBreak = Math.max(
+      window.lastIndexOf('।'), // Devanagari/Gujarati danda (sentence end)
+      window.lastIndexOf('.'),
+      window.lastIndexOf('?'),
+      window.lastIndexOf('!'),
+      window.lastIndexOf(' ')
+    );
+    const breakPoint = lastBreak > 0 ? lastBreak + 1 : maxLen;
+    chunks.push(remaining.slice(0, breakPoint).trim());
+    remaining = remaining.slice(breakPoint).trim();
   }
 
-  const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      input: { text },
-      voice: { languageCode, ssmlGender: 'FEMALE' },
-      audioConfig: { audioEncoding: 'MP3' }
-    })
+  return chunks.filter(Boolean);
+}
+
+async function synthesizeChunk(chunk: string, googleLang: string): Promise<Buffer> {
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=${googleLang}&client=tw-ob`;
+
+  const response = await fetch(url, {
+    headers: {
+      // A browser-like User-Agent and Referer are required — Google rejects
+      // bare server-to-server requests to this endpoint without them.
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      Referer: 'https://translate.google.com/'
+    }
   });
 
   if (!response.ok) {
-    const errBody = await response.text().catch(() => '');
-    throw Object.assign(new Error(`Google Cloud TTS request failed (${response.status}): ${errBody}`), { code: 'UPSTREAM_ERROR' });
+    throw new Error(`Google Translate TTS request failed (${response.status})`);
   }
 
-  const data = await response.json() as { audioContent?: string };
-  if (!data.audioContent) {
-    throw Object.assign(new Error('Google Cloud TTS returned no audio content'), { code: 'UPSTREAM_ERROR' });
-  }
+  const arrayBuffer = await response.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}
 
-  return Buffer.from(data.audioContent, 'base64');
+async function synthesizeWithFreeTts(text: string, langCode: string): Promise<Buffer> {
+  const googleLang = SUPPORTED_LANGS[langCode];
+  const chunks = splitTextIntoChunks(text, MAX_CHUNK_LENGTH);
+
+  // Sequential, not parallel — this is an unofficial endpoint with no
+  // documented rate limit, so we deliberately don't hammer it with bursts.
+  const buffers: Buffer[] = [];
+  for (const chunk of chunks) {
+    buffers.push(await synthesizeChunk(chunk, googleLang));
+  }
+  return Buffer.concat(buffers);
 }
 
 // POST /api/tts/synthesize  { text: string, lang: 'gu-IN' | 'hi-IN' | 'en-IN' }
@@ -59,7 +107,7 @@ async function synthesizeWithGoogleCloudTts(text: string, languageCode: string):
 router.post('/synthesize', async (req: Request, res: Response) => {
   const { text, lang } = req.body as { text?: unknown; lang?: unknown };
 
-  if (typeof text !== 'string' || !text.trim() || typeof lang !== 'string' || !SUPPORTED_LANGS.has(lang)) {
+  if (typeof text !== 'string' || !text.trim() || typeof lang !== 'string' || !SUPPORTED_LANGS[lang]) {
     return res.status(400).json({ error: 'invalid_request' });
   }
 
@@ -76,17 +124,12 @@ router.post('/synthesize', async (req: Request, res: Response) => {
   }
 
   try {
-    const audioBuffer = await synthesizeWithGoogleCloudTts(cleanText, lang);
+    const audioBuffer = await synthesizeWithFreeTts(cleanText, lang);
     cacheSet(cacheKey, audioBuffer);
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Cache-Control', 'public, max-age=86400');
     return res.send(audioBuffer);
   } catch (err: any) {
-    if (err?.code === 'NOT_CONFIGURED') {
-      // Not an error the user needs to see — the client silently falls back
-      // to the device voice when it gets this.
-      return res.status(503).json({ error: 'cloud_tts_not_configured' });
-    }
     console.error('[TTS] synthesize failed:', err?.message || err);
     return res.status(502).json({ error: 'tts_upstream_error' });
   }
