@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AccessibilityProvider, useAccessibility } from './context/AccessibilityContext';
 import { Header } from './components/common/Header';
 import { VoiceFloatingMic } from './components/common/VoiceFloatingMic';
+import { VoiceAnnouncer } from './components/common/VoiceAnnouncer';
 
 import { AuthPage } from './pages/AuthPage';
 import { ProfileSetupPage } from './pages/ProfileSetupPage';
@@ -55,6 +56,9 @@ const AppContent: React.FC = () => {
 
       {/* Floating Mic Available on Every Screen */}
       <VoiceFloatingMic />
+
+      {/* Global click → voice announcer, active on every screen */}
+      <VoiceAnnouncer />
     </div>
   );
 };

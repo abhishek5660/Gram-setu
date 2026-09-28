@@ -61,7 +61,8 @@ export const DocumentsPage: React.FC = () => {
                 <Eye className="w-4 h-4" />
                 <span>{t('documents.view')}</span>
               </button>
-              <button 
+              <button
+                data-voice-skip="true"
                 onClick={() => speak(`${doc.name} ${t('documents.download')}`)}
                 className="flex-1 py-3 bg-govGreen-600 text-white font-bold rounded-xl hover:bg-govGreen-700 flex items-center justify-center gap-2 cursor-pointer"
               >

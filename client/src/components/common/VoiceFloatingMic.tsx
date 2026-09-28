@@ -87,6 +87,7 @@ export const VoiceFloatingMic: React.FC = () => {
         {/* Stop Audio Button when TTS is playing */}
         {isSpeaking && (
           <button
+            data-voice-skip="true"
             onClick={stopSpeech}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-full shadow-2xl animate-bounce border-2 border-white cursor-pointer"
           >
@@ -97,6 +98,7 @@ export const VoiceFloatingMic: React.FC = () => {
 
         {/* Floating Voice Mic Button */}
         <button
+          data-voice-skip="true"
           onClick={handleMicClick}
           aria-label={t('voice.floating_label')}
           className={`relative group min-w-[68px] min-h-[68px] w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 border-4 border-white cursor-pointer ${
@@ -130,6 +132,7 @@ export const VoiceFloatingMic: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white max-w-lg w-full rounded-3xl p-6 shadow-2xl border-4 border-saffron-500 flex flex-col items-center text-center relative">
             <button
+              data-voice-skip="true"
               onClick={() => {
                 stopListening();
                 setShowVoiceModal(false);
@@ -163,6 +166,7 @@ export const VoiceFloatingMic: React.FC = () => {
             {/* Manual Quick Command Suggestions */}
             <div className="w-full grid grid-cols-2 gap-2 text-left">
               <button
+                data-voice-skip="true"
                 onClick={() => handleVoiceQuery('आय प्रमाणपत्र चाहिए')}
                 className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
@@ -171,6 +175,7 @@ export const VoiceFloatingMic: React.FC = () => {
               </button>
 
               <button
+                data-voice-skip="true"
                 onClick={() => handleVoiceQuery('शिकायत दर्ज करें')}
                 className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
@@ -179,6 +184,7 @@ export const VoiceFloatingMic: React.FC = () => {
               </button>
 
               <button
+                data-voice-skip="true"
                 onClick={() => handleVoiceQuery('पेंशन योजना')}
                 className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >
@@ -187,6 +193,7 @@ export const VoiceFloatingMic: React.FC = () => {
               </button>
 
               <button
+                data-voice-skip="true"
                 onClick={() => handleVoiceQuery('दस्तावेज़ लॉकर')}
                 className="p-3 rounded-xl bg-slate-100 hover:bg-saffron-50 border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between cursor-pointer"
               >

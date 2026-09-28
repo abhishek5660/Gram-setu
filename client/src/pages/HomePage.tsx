@@ -99,7 +99,8 @@ export const HomePage: React.FC = () => {
             <div>
               <div className="text-amber-200 font-extrabold text-sm tracking-wider uppercase flex items-center gap-2">
                 <span>{t('home.greeting')}</span>
-                <button 
+                <button
+                  data-voice-skip="true"
                   onClick={() => speak(`${t('home.greeting')} ${user?.name || ''}`)}
                   className="p-1 hover:bg-white/20 rounded-full"
                 >

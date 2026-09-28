@@ -95,6 +95,7 @@ export const AssistantPage: React.FC = () => {
 
         {isSpeaking && (
           <button
+            data-voice-skip="true"
             onClick={stopSpeech}
             className="flex items-center gap-2 bg-red-600 text-white font-bold px-3 py-2 rounded-xl text-xs animate-pulse cursor-pointer"
           >
@@ -121,7 +122,7 @@ export const AssistantPage: React.FC = () => {
             }`}>
               <p>{m.content}</p>
               {m.role === 'assistant' && (
-                <button onClick={() => speak(m.content)} className="mt-2 text-xs text-saffron-700 font-bold flex items-center gap-1 hover:underline cursor-pointer">
+                <button data-voice-skip="true" onClick={() => speak(m.content)} className="mt-2 text-xs text-saffron-700 font-bold flex items-center gap-1 hover:underline cursor-pointer">
                   <Volume2 className="w-4 h-4" />
                   <span>{t('assistant.read_again')}</span>
                 </button>
@@ -154,6 +155,7 @@ export const AssistantPage: React.FC = () => {
           className="flex-1 p-4 rounded-2xl border-2 border-slate-300 font-bold text-lg bg-white"
         />
         <button
+          data-voice-skip="true"
           onClick={() => handleSend()}
           className="bg-saffron-600 hover:bg-saffron-700 text-white p-4 rounded-2xl font-bold min-w-[60px] flex items-center justify-center shadow-lg cursor-pointer"
         >

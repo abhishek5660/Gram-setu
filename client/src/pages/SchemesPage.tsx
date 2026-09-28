@@ -97,7 +97,7 @@ export const SchemesPage: React.FC = () => {
                 <div><b>{t('schemes.eligibility_label')}</b> {displayEligibility}</div>
                 <div><b>{t('schemes.docs_required')}</b> {displayDocs}</div>
               </div>
-              <BigButton label={t('schemes.apply_now')} onClick={() => speak(displayTitle)} variant="primary" />
+              <BigButton data-voice-skip="true" label={t('schemes.apply_now')} onClick={() => speak(displayTitle)} variant="primary" />
             </div>
           );
         })}

@@ -47,7 +47,7 @@ interface AccessibilityContextType {
   
   // Voice STT / TTS
   isSpeaking: boolean;
-  speak: (text: string) => void;
+  speak: (text: string, langOverride?: AppLanguage) => void;
   stopSpeech: () => void;
   isListening: boolean;
   listen: (onResultCallback: (text: string) => void) => void;
@@ -159,7 +159,10 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Text-To-Speech (TTS)
-  const speak = (text: string) => {
+  // `langOverride` lets a caller that just switched languages (e.g. the language
+  // switcher itself) speak in the new language immediately, without waiting for
+  // the `language` state update to re-render first.
+  const speak = (text: string, langOverride?: AppLanguage) => {
     if (!('speechSynthesis' in window)) {
       console.warn('Speech synthesis not supported in this browser.');
       return;
@@ -169,7 +172,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const cleanText = text.replace(/[*#]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = SPEECH_LANG_MAP[language];
+    utterance.lang = SPEECH_LANG_MAP[langOverride || language];
     // Slower rate for Senior Citizens for clear understanding
     utterance.rate = isSeniorMode ? 0.8 : 0.95;
     utterance.pitch = 1.0;

@@ -46,6 +46,7 @@ export const InfoPage: React.FC = () => {
 
             <a
               href={`tel:${c.phone}`}
+              data-voice-skip="true"
               onClick={() => speak(`Calling ${c.title}`)}
               className="bg-govGreen-600 hover:bg-govGreen-700 text-white font-bold px-4 py-2.5 rounded-2xl text-xs flex items-center gap-1.5 shadow"
             >
@@ -69,6 +70,7 @@ export const InfoPage: React.FC = () => {
               <div className="flex justify-between items-start">
                 <h3 className="text-xl font-black text-amber-950">{title}</h3>
                 <button
+                  data-voice-skip="true"
                   onClick={() => speak(`${title}. ${content}`)}
                   className="bg-saffron-600 text-white font-bold p-2 rounded-xl text-xs flex items-center gap-1 cursor-pointer"
                 >

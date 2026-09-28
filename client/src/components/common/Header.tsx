@@ -37,9 +37,10 @@ export const Header: React.FC = () => {
           {/* Explicit 3-Segment Language Switcher Pill */}
           <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-amber-300/50 text-xs font-bold shadow-inner">
             <button
+              data-voice-skip="true"
               onClick={() => {
                 setLanguage('hi');
-                speak('भाषा हिंदी में बदली गई');
+                speak('भाषा हिंदी में बदली गई', 'hi');
               }}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'hi'
@@ -50,9 +51,10 @@ export const Header: React.FC = () => {
               हिंदी
             </button>
             <button
+              data-voice-skip="true"
               onClick={() => {
                 setLanguage('en');
-                speak('Language switched to English');
+                speak('Language switched to English', 'en');
               }}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'en'
@@ -63,9 +65,10 @@ export const Header: React.FC = () => {
               English
             </button>
             <button
+              data-voice-skip="true"
               onClick={() => {
                 setLanguage('gu');
-                speak('ભાષા ગુજરાતીમાં બદલાઈ ગઈ');
+                speak('ભાષા ગુજરાતીમાં બદલાઈ ગઈ', 'gu');
               }}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'gu'
@@ -79,6 +82,7 @@ export const Header: React.FC = () => {
 
           {/* Bada Text Toggle Button */}
           <button
+            data-voice-skip="true"
             onClick={() => {
               toggleBadaText();
               speak(isBadaText ? 'Normal Text Mode' : 'Bada Text Mode Enabled');
@@ -93,6 +97,7 @@ export const Header: React.FC = () => {
 
           {/* High Contrast Toggle */}
           <button
+            data-voice-skip="true"
             onClick={() => {
               toggleHighContrast();
               speak(isHighContrast ? 'Normal Contrast' : 'High Contrast Enabled');
@@ -136,6 +141,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-2 md:gap-3">
           {/* Senior Mode Quick Button */}
           <button
+            data-voice-skip="true"
             onClick={() => {
               toggleSeniorMode();
               speak(!isSeniorMode ? 'Senior Citizen Mode Active' : 'Normal Mode Active');
@@ -153,8 +159,9 @@ export const Header: React.FC = () => {
           {/* User Profile or Login */}
           {user ? (
             <div className="flex items-center gap-2">
-              <div 
+              <div
                 onClick={() => navigate('/profile')}
+                data-voice={t('voice.opened_profile')}
                 className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-300 cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-full bg-saffron-500 text-white flex items-center justify-center font-bold text-sm">
@@ -171,6 +178,7 @@ export const Header: React.FC = () => {
                 onClick={logout}
                 className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                 title={t('nav.logout')}
+                aria-label={t('nav.logout')}
               >
                 <LogOut className="w-5 h-5" />
               </button>

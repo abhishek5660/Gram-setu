@@ -68,7 +68,14 @@
     "floating_label": "बोलकर कहें (Voice AI)",
     "ai_modal_title": "आपकी आवाज सुनी जा रही है...",
     "ai_modal_sub": "\"आय प्रमाण पत्र चाहिए\", \"लाइट खराब है\", या \"पेंशन स्टेटस\" बोलें",
-    "transcript_placeholder": "बोलिए, मैं सुन रहा हूँ..."
+    "transcript_placeholder": "बोलिए, मैं सुन रहा हूँ...",
+    "opening_certificates": "आय प्रमाणपत्र आवेदन खोल रहे हैं...",
+    "opening_complaints": "शिकायत पेज खोल रहे हैं...",
+    "opening_schemes": "योजनाएं व पेंशन हब खोल रहे हैं...",
+    "opening_documents": "दस्तावेज़ लॉकर खोल रहे हैं...",
+    "opening_assistant": "पंचायत मित्र AI से पूछ रहे हैं...",
+    "mic_prompt": "बोलिए! मैं आपकी क्या सहायता कर सकता हूँ?",
+    "opened_profile": "आपने अपनी प्रोफाइल खोली है।"
   },
 
   "home": {

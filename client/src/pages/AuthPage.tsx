@@ -106,7 +106,7 @@ export const AuthPage: React.FC = () => {
         {error && (
           <div className="mb-6 p-4 rounded-2xl bg-red-100 border-2 border-red-400 text-red-800 text-center font-bold text-base flex items-center justify-between">
             <span>⚠️ {error}</span>
-            <button onClick={() => speak(error)} className="p-1 text-red-600">
+            <button data-voice-skip="true" onClick={() => speak(error)} className="p-1 text-red-600">
               <Volume2 className="w-5 h-5" />
             </button>
           </div>

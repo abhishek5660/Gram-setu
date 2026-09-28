@@ -89,7 +89,7 @@ export const ProfileSetupPage: React.FC = () => {
               <CheckCircle2 className="w-5 h-5 text-amber-700" />
               {message}
             </span>
-            <button onClick={() => speak(message)}>
+            <button data-voice-skip="true" onClick={() => speak(message)}>
               <Volume2 className="w-5 h-5 text-amber-700" />
             </button>
           </div>

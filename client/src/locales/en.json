@@ -68,7 +68,14 @@
     "floating_label": "Voice AI Assistant",
     "ai_modal_title": "Listening to your voice...",
     "ai_modal_sub": "Say \"Need Income Certificate\", \"Light broken\", or \"Pension Status\"",
-    "transcript_placeholder": "Speak, I am listening..."
+    "transcript_placeholder": "Speak, I am listening...",
+    "opening_certificates": "Opening Income Certificate Application...",
+    "opening_complaints": "Opening Complaints Page...",
+    "opening_schemes": "Opening Schemes & Pension Hub...",
+    "opening_documents": "Opening Document Locker...",
+    "opening_assistant": "Asking Panchayat Mitra AI...",
+    "mic_prompt": "Please speak! How can I assist you today?",
+    "opened_profile": "You have opened your profile."
   },
 
   "home": {
