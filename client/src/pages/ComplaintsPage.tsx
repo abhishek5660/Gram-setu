@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { BigButton } from '../components/common/BigButton';
 import { Camera, Mic } from 'lucide-react';
 
 export const ComplaintsPage: React.FC = () => {
-  const { user, token, t, speak } = useAccessibility();
-  const [description, setDescription] = useState<string>(t('complaints.default_text'));
+  const { user, token, t, speak, language } = useAccessibility();
+  const [description, setDescription] = useState<string>('');
+  const isDefaultText = useRef(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<any>(null);
+
+  // Update default placeholder text when language changes
+  useEffect(() => {
+    if (isDefaultText.current) {
+      setDescription(t('complaints.default_text'));
+    }
+  }, [language]);
 
   const handleSubmit = async () => {
     if (!user) return alert(t('nav.login'));
@@ -69,7 +77,7 @@ export const ComplaintsPage: React.FC = () => {
             <textarea
               rows={4}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => { isDefaultText.current = false; setDescription(e.target.value); }}
               className="w-full p-4 rounded-2xl border-2 border-slate-300 font-bold text-lg text-slate-900 bg-slate-50"
             />
           </div>

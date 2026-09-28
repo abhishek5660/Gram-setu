@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { Send, Volume2, Square } from 'lucide-react';
 
 export const AssistantPage: React.FC = () => {
-  const { speak, isSpeaking, stopSpeech, t } = useAccessibility();
+  const { speak, isSpeaking, stopSpeech, t, language } = useAccessibility();
   const [searchParams] = useSearchParams();
   const initialQ = searchParams.get('q') || '';
   const navigate = useNavigate();
+  const isFirstRender = useRef(true);
 
   const [messages, setMessages] = useState<any[]>([
     {
@@ -16,6 +17,22 @@ export const AssistantPage: React.FC = () => {
     }
   ]);
   const [input, setInput] = useState<string>('');
+
+  // Update greeting when language changes (only if no conversation started)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setMessages(prev => {
+      // Only update the first greeting message if it's still the only message
+      if (prev.length === 1 && prev[0].role === 'assistant') {
+        return [{ role: 'assistant', content: t('assistant.initial_greeting') }];
+      }
+      return prev;
+    });
+  }, [language]);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -37,11 +54,16 @@ export const AssistantPage: React.FC = () => {
       const res = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMsgs })
+        body: JSON.stringify({ messages: newMsgs, language })
       });
       const data = await res.json();
       if (res.ok) {
-        const replyMsg = { role: 'assistant', content: data.textHindi || data.textEnglish };
+        const replyByLanguage = {
+          hi: data.textHindi,
+          en: data.textEnglish,
+          gu: data.textGujarati
+        };
+        const replyMsg = { role: 'assistant', content: replyByLanguage[language] || data.textHindi || data.textEnglish };
         setMessages([...newMsgs, replyMsg]);
         speak(replyMsg.content);
 

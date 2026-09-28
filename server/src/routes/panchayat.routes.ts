@@ -331,8 +331,8 @@ router.post('/payments/:id/pay', async (req: Request, res: Response) => {
 // ----------------------------------------------------
 router.post('/ai/chat', async (req: Request, res: Response) => {
   try {
-    const { messages, currentFormState } = req.body;
-    const response = await aiService.chatAssistant(messages || [], currentFormState);
+    const { messages, currentFormState, language } = req.body;
+    const response = await aiService.chatAssistant(messages || [], currentFormState, language);
     return res.json(response);
   } catch (error) {
     return res.status(500).json({ error: 'एआई सहायक सेवा अस्थायी रूप से अनुपलब्ध है' });

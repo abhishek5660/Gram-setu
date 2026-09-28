@@ -1,6 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import hiDict from '../locales/hi.json';
 import enDict from '../locales/en.json';
+import guDict from '../locales/gu.json';
+
+export type AppLanguage = 'hi' | 'en' | 'gu';
+
+const SPEECH_LANG_MAP: Record<AppLanguage, string> = {
+  hi: 'hi-IN',
+  en: 'en-IN',
+  gu: 'gu-IN'
+};
+
+const STT_UNSUPPORTED_MESSAGE: Record<AppLanguage, string> = {
+  hi: 'आपके ब्राउज़र में आवाज पहचान सुविधा उपलब्ध नहीं है।',
+  en: 'Speech recognition is not supported in this browser.',
+  gu: 'તમારા બ્રાઉઝરમાં વૉઇસ ઓળખની સુવિધા ઉપલબ્ધ નથી.'
+};
 
 interface UserProfile {
   id: string;
@@ -21,8 +36,8 @@ interface AccessibilityContextType {
   toggleHighContrast: () => void;
   isSeniorMode: boolean;
   toggleSeniorMode: () => void;
-  language: 'hi' | 'en';
-  setLanguage: (lang: 'hi' | 'en') => void;
+  language: AppLanguage;
+  setLanguage: (lang: AppLanguage) => void;
   t: (keyPath: string) => string;
   user: UserProfile | null;
   setUser: (u: UserProfile | null) => void;
@@ -45,8 +60,8 @@ const AccessibilityContext = createContext<AccessibilityContextType | undefined>
 export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isBadaText, setIsBadaText] = useState<boolean>(() => localStorage.getItem('gs_bada_text') === 'true');
   const [isHighContrast, setIsHighContrast] = useState<boolean>(() => localStorage.getItem('gs_high_contrast') === 'true');
-  const [language, setLanguageState] = useState<'hi' | 'en'>(() => {
-    return (localStorage.getItem('gs_lang') as 'hi' | 'en') || 'hi';
+  const [language, setLanguageState] = useState<AppLanguage>(() => {
+    return (localStorage.getItem('gs_lang') as AppLanguage) || 'hi';
   });
   const [user, setUser] = useState<UserProfile | null>(() => {
     const saved = localStorage.getItem('gs_user');
@@ -107,7 +122,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const setLanguage = (lang: 'hi' | 'en') => {
+  const setLanguage = (lang: AppLanguage) => {
     setLanguageState(lang);
     localStorage.setItem('gs_lang', lang);
   };
@@ -130,7 +145,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Translation helper
   const t = (keyPath: string): string => {
-    const dict = language === 'hi' ? hiDict : enDict;
+    const dict = language === 'hi' ? hiDict : language === 'gu' ? guDict : enDict;
     const parts = keyPath.split('.');
     let current: any = dict;
     for (const p of parts) {
@@ -154,7 +169,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const cleanText = text.replace(/[*#]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.lang = SPEECH_LANG_MAP[language];
     // Slower rate for Senior Citizens for clear understanding
     utterance.rate = isSeniorMode ? 0.8 : 0.95;
     utterance.pitch = 1.0;
@@ -178,12 +193,12 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert(language === 'hi' ? 'आपके ब्राउज़र में आवाज पहचान सुविधा उपलब्ध नहीं है।' : 'Speech recognition is not supported in this browser.');
+      alert(STT_UNSUPPORTED_MESSAGE[language]);
       return;
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+    recognition.lang = SPEECH_LANG_MAP[language];
     recognition.continuous = false;
     recognition.interimResults = true;
 

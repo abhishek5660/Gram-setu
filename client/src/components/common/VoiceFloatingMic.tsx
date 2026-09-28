@@ -11,7 +11,6 @@ export const VoiceFloatingMic: React.FC = () => {
     isSpeaking,
     stopSpeech,
     speak,
-    language,
     voiceTranscript,
     t
   } = useAccessibility();
@@ -25,8 +24,8 @@ export const VoiceFloatingMic: React.FC = () => {
       stopListening();
     } else {
       setShowVoiceModal(true);
-      speak(language === 'hi' ? 'बोलिए! मैं आपकी क्या सहायता कर सकता हूँ?' : 'Please speak! How can I assist you today?');
-      
+      speak(t('voice.mic_prompt'));
+
       listen((result) => {
         setCapturedQuery(result);
         handleVoiceQuery(result);
@@ -37,8 +36,8 @@ export const VoiceFloatingMic: React.FC = () => {
   const handleVoiceQuery = (query: string) => {
     const text = query.toLowerCase();
 
-    if (text.includes('income') || text.includes('आय प्रमाणपत्र') || text.includes('आया')) {
-      speak('Opening Income Certificate Application...');
+    if (text.includes('income') || text.includes('आय प्रमाणपत्र') || text.includes('आया') || text.includes('આવક')) {
+      speak(t('voice.opening_certificates'));
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/certificates?service=income_certificate');
@@ -46,8 +45,8 @@ export const VoiceFloatingMic: React.FC = () => {
       return;
     }
 
-    if (text.includes('complaint') || text.includes('शिकायत') || text.includes('लाइट') || text.includes('पानी')) {
-      speak('Opening Complaints Page...');
+    if (text.includes('complaint') || text.includes('शिकायत') || text.includes('लाइट') || text.includes('पानी') || text.includes('ફરિયાદ') || text.includes('લાઇટ') || text.includes('પાણી')) {
+      speak(t('voice.opening_complaints'));
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/complaints');
@@ -55,8 +54,8 @@ export const VoiceFloatingMic: React.FC = () => {
       return;
     }
 
-    if (text.includes('pension') || text.includes('पेंशन') || text.includes('योजना')) {
-      speak('Opening Schemes & Pension Hub...');
+    if (text.includes('pension') || text.includes('पेंशन') || text.includes('योजना') || text.includes('પેન્શન') || text.includes('યોજના')) {
+      speak(t('voice.opening_schemes'));
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/schemes');
@@ -64,8 +63,8 @@ export const VoiceFloatingMic: React.FC = () => {
       return;
     }
 
-    if (text.includes('document') || text.includes('आधार') || text.includes('कागज')) {
-      speak('Opening Document Locker...');
+    if (text.includes('document') || text.includes('आधार') || text.includes('कागज') || text.includes('દસ્તાવેજ') || text.includes('આધાર')) {
+      speak(t('voice.opening_documents'));
       setTimeout(() => {
         setShowVoiceModal(false);
         navigate('/documents');
@@ -74,7 +73,7 @@ export const VoiceFloatingMic: React.FC = () => {
     }
 
     // Default: Open AI Panchayat Mitra Assistant Chat
-    speak(`Asking Panchayat Mitra AI...`);
+    speak(t('voice.opening_assistant'));
     setTimeout(() => {
       setShowVoiceModal(false);
       navigate(`/assistant?q=${encodeURIComponent(query)}`);

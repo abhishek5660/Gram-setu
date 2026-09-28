@@ -21,6 +21,8 @@ export interface AIComplaintCategorization {
   suggestedDepartment: string;
 }
 
+export type AppLanguage = 'hi' | 'en' | 'gu';
+
 export class AIService {
   private apiKey: string | null;
 
@@ -29,39 +31,44 @@ export class AIService {
   }
 
   // 1. Panchayat Mitra Conversational Assistant & Guided Form Filling
-  async chatAssistant(messages: AIChatMessage[], currentFormState?: any): Promise<{ textHindi: string; textEnglish: string; identifiedService?: string; nextFieldToAsk?: string; formUpdates?: any }> {
+  async chatAssistant(messages: AIChatMessage[], currentFormState?: any, language: AppLanguage = 'hi'): Promise<{ textHindi: string; textEnglish: string; textGujarati: string; identifiedService?: string; nextFieldToAsk?: string; formUpdates?: any }> {
     const lastUserMsg = messages[messages.length - 1]?.content?.toLowerCase() || '';
 
-    // Intent recognition heuristics for fallback mode
-    if (lastUserMsg.includes('income') || lastUserMsg.includes('आय प्रमाणपत्र') || lastUserMsg.includes('आया')) {
+    // Intent recognition heuristics for fallback mode (keywords span Hindi, English & Gujarati
+    // scripts so mixed-language speech like "मुझे income की information चाहिए" is understood).
+    if (lastUserMsg.includes('income') || lastUserMsg.includes('आय प्रमाणपत्र') || lastUserMsg.includes('आया') || lastUserMsg.includes('આવક')) {
       return {
         textHindi: "आय प्रमाणपत्र (Income Certificate) के लिए आपको आधार कार्ड और राशन कार्ड की आवश्यकता होगी। क्या आपके पास ये दस्तावेज़ उपलब्ध हैं?",
         textEnglish: "For Income Certificate, you will need your Aadhaar card and Ration card. Do you have these documents ready?",
+        textGujarati: "આવક પ્રમાણપત્ર માટે તમારે આધાર કાર્ડ અને રેશન કાર્ડની જરૂર પડશે. શું તમારી પાસે આ દસ્તાવેજો તૈયાર છે?",
         identifiedService: "income_certificate",
         nextFieldToAsk: "annualIncome",
         formUpdates: { serviceType: "income_certificate" }
       };
     }
 
-    if (lastUserMsg.includes('pension') || lastUserMsg.includes('पेंशन') || lastUserMsg.includes('वृद्धावस्था')) {
+    if (lastUserMsg.includes('pension') || lastUserMsg.includes('पेंशन') || lastUserMsg.includes('वृद्धावस्था') || lastUserMsg.includes('પેન્શન')) {
       return {
         textHindi: "ग्राम सेतु वृद्धावस्था और विधवा पेंशन में आपकी सहायता कर सकता है। क्या आप अपनी या किसी रिश्तेदार की पेंशन स्थिति जांचना चाहते हैं?",
         textEnglish: "Gram Setu can assist you with Old Age and Widow Pension schemes. Would you like to check pension eligibility or status?",
+        textGujarati: "ગ્રામ સેતુ વૃદ્ધાવસ્થા અને વિધવા પેન્શનમાં તમારી મદદ કરી શકે છે. શું તમે તમારી અથવા કોઈ સંબંધીની પેન્શન સ્થિતિ તપાસવા માંગો છો?",
         identifiedService: "pension_scheme"
       };
     }
 
-    if (lastUserMsg.includes('complaint') || lastUserMsg.includes('शिकायत') || lastUserMsg.includes('लाइट') || lastUserMsg.includes('पानी') || lastUserMsg.includes('सड़क')) {
+    if (lastUserMsg.includes('complaint') || lastUserMsg.includes('शिकायत') || lastUserMsg.includes('लाइट') || lastUserMsg.includes('पानी') || lastUserMsg.includes('सड़क') || lastUserMsg.includes('ફરિયાદ') || lastUserMsg.includes('લાઇટ') || lastUserMsg.includes('પાણી')) {
       return {
         textHindi: "आप किसी भी समस्या (जैसे बिजली, पानी, सड़क या नालियों) की फोटो या बोलकर शिकायत दर्ज कर सकते हैं। क्या आप शिकायत दर्ज करना चाहते हैं?",
         textEnglish: "You can file complaints regarding water, street lights, or roads by speaking or uploading a photo. Would you like to submit a complaint?",
+        textGujarati: "તમે વીજળી, પાણી, રસ્તા અથવા ગટર જેવી કોઈપણ સમસ્યાની ફોટો અથવા બોલીને ફરિયાદ નોંધાવી શકો છો. શું તમે ફરિયાદ નોંધાવવા માંગો છો?",
         identifiedService: "grievance"
       };
     }
 
     return {
       textHindi: "नमस्ते! मैं पंचायत मित्र हूँ। मैं आय प्रमाण पत्र, पेंशन, शिकायत दर्ज करने और ग्राम पंचायत की जानकारियों में आपकी मदद कर सकता हूँ। आप क्या करना चाहते हैं?",
-      textEnglish: "Namaste! I am Panchayat Mitra. I can help you apply for certificates, check pensions, or file village complaints. How can I assist you today?"
+      textEnglish: "Namaste! I am Panchayat Mitra. I can help you apply for certificates, check pensions, or file village complaints. How can I assist you today?",
+      textGujarati: "નમસ્તે! હું પંચાયત મિત્ર છું. હું આવક પ્રમાણપત્ર, પેન્શન, ફરિયાદ નોંધણી અને ગ્રામ પંચાયતની માહિતીમાં તમારી મદદ કરી શકું છું. હું તમારી કેવી રીતે મદદ કરી શકું?"
     };
   }
 

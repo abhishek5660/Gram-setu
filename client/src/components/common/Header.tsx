@@ -34,7 +34,7 @@ export const Header: React.FC = () => {
 
         {/* Quick Accessibility Bar */}
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Explicit 2-Segment Language Switcher Pill */}
+          {/* Explicit 3-Segment Language Switcher Pill */}
           <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-amber-300/50 text-xs font-bold shadow-inner">
             <button
               onClick={() => {
@@ -61,6 +61,19 @@ export const Header: React.FC = () => {
               }`}
             >
               English
+            </button>
+            <button
+              onClick={() => {
+                setLanguage('gu');
+                speak('ભાષા ગુજરાતીમાં બદલાઈ ગઈ');
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                language === 'gu'
+                  ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
+                  : 'text-amber-100 hover:text-white'
+              }`}
+            >
+              ગુજરાતી
             </button>
           </div>
 

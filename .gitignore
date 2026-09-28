@@ -10,6 +10,7 @@ client/dist/
 
 # Environment & Logs
 .env
+.env.local
 *.log
 npm-debug.log*
 
@@ -17,3 +18,9 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# SQLite / Prisma
+*.db
+*.db-journal
+server/prisma/dev.db
+server/src/generated/
