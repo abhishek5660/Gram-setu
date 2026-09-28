@@ -152,12 +152,12 @@ export const AssistantPage: React.FC = () => {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder={t('assistant.placeholder')}
-          className="flex-1 p-4 rounded-2xl border-2 border-slate-300 font-bold text-lg bg-white"
+          className="min-w-0 flex-1 p-4 rounded-2xl border-2 border-slate-300 font-bold text-lg bg-white"
         />
         <button
           data-voice-skip="true"
           onClick={() => handleSend()}
-          className="bg-saffron-600 hover:bg-saffron-700 text-white p-4 rounded-2xl font-bold min-w-[60px] flex items-center justify-center shadow-lg cursor-pointer"
+          className="shrink-0 bg-saffron-600 hover:bg-saffron-700 text-white p-4 rounded-2xl font-bold min-w-[60px] flex items-center justify-center shadow-lg cursor-pointer"
         >
           <Send className="w-6 h-6" />
         </button>

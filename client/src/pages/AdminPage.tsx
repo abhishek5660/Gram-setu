@@ -94,7 +94,8 @@ export const AdminPage: React.FC = () => {
       {/* Applications Table */}
       {activeTab === 'APPS' && (
         <div className="bg-white rounded-3xl border-4 border-slate-200 shadow-xl overflow-hidden">
-          <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-100 text-slate-700 font-extrabold text-sm border-b">
                 <th className="p-4">{t('admin.col_tracking')}</th>
@@ -137,6 +138,7 @@ export const AdminPage: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

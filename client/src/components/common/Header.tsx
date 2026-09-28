@@ -24,25 +24,25 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-2 border-saffron-500/30 shadow-md">
       {/* Top Banner for Government / Village Identity */}
-      <div className="bg-gradient-to-r from-saffron-600 via-amber-600 to-govGreen-700 text-white text-xs md:text-sm py-1.5 px-4 flex justify-between items-center font-medium">
+      <div className="bg-gradient-to-r from-saffron-600 via-amber-600 to-govGreen-700 text-white text-xs md:text-sm py-1.5 px-3 sm:px-4 flex flex-wrap justify-between items-center gap-x-2 gap-y-1.5 font-medium">
         <div className="flex items-center gap-2">
-          <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">
+          <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider whitespace-nowrap">
             {t('digital_panchayat')}
           </span>
           <span className="hidden sm:inline">{t('govt_banner')}</span>
         </div>
 
         {/* Quick Accessibility Bar */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 md:gap-3">
           {/* Explicit 3-Segment Language Switcher Pill */}
-          <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-amber-300/50 text-xs font-bold shadow-inner">
+          <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-amber-300/50 text-[11px] sm:text-xs font-bold shadow-inner">
             <button
               data-voice-skip="true"
               onClick={() => {
                 setLanguage('hi');
                 speak('भाषा हिंदी में बदली गई', 'hi');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'hi'
                   ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
                   : 'text-amber-100 hover:text-white'
@@ -56,7 +56,7 @@ export const Header: React.FC = () => {
                 setLanguage('en');
                 speak('Language switched to English', 'en');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'en'
                   ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
                   : 'text-amber-100 hover:text-white'
@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
                 setLanguage('gu');
                 speak('ભાષા ગુજરાતીમાં બદલાઈ ગઈ', 'gu');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 language === 'gu'
                   ? 'bg-amber-400 text-slate-950 font-extrabold shadow-md scale-105'
                   : 'text-amber-100 hover:text-white'
@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
               toggleBadaText();
               speak(isBadaText ? t('bada_text') : t('bada_text_on'));
             }}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               isBadaText ? 'bg-amber-300 text-black ring-2 ring-yellow-400' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
@@ -95,14 +95,15 @@ export const Header: React.FC = () => {
             <span>{isBadaText ? t('bada_text_on') : t('bada_text')}</span>
           </button>
 
-          {/* High Contrast Toggle */}
+          {/* High Contrast Toggle — visible on every screen size, not just desktop,
+              so mobile users have the same accessibility controls as desktop. */}
           <button
             data-voice-skip="true"
             onClick={() => {
               toggleHighContrast();
               speak(isHighContrast ? t('high_contrast') : t('high_contrast_on'));
             }}
-            className={`hidden md:flex items-center gap-1 px-2.5 py-1 rounded-xl font-bold text-xs cursor-pointer ${
+            className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl font-bold text-xs cursor-pointer ${
               isHighContrast ? 'bg-yellow-400 text-black' : 'bg-white/20 hover:bg-white/30'
             }`}
           >
@@ -113,19 +114,19 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Main Navigation Header */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-saffron-500 to-amber-600 flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-105 transition-transform">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-saffron-500 to-amber-600 flex items-center justify-center text-white font-extrabold text-xl sm:text-2xl shadow-lg group-hover:scale-105 transition-transform shrink-0">
             🌾
           </div>
           <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-2xl tracking-tight text-slate-900 group-hover:text-saffron-600 transition-colors">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-slate-900 group-hover:text-saffron-600 transition-colors">
                 {t('app_name')}
               </span>
               {isSeniorMode && (
-                <span className="bg-emerald-100 text-emerald-800 font-bold text-xs px-2 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                <span className="hidden sm:flex bg-emerald-100 text-emerald-800 font-bold text-xs px-2 py-0.5 rounded-full border border-emerald-300 items-center gap-1">
                   <HeartHandshake className="w-3.5 h-3.5 text-emerald-600" />
                   {t('senior_mode')}
                 </span>
@@ -138,7 +139,7 @@ export const Header: React.FC = () => {
         </Link>
 
         {/* Action Controls & User Identity */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
           {/* Senior Mode Quick Button */}
           <button
             data-voice-skip="true"
@@ -146,9 +147,9 @@ export const Header: React.FC = () => {
               toggleSeniorMode();
               speak(!isSeniorMode ? t('senior_mode_on') : t('senior_mode'));
             }}
-            className={`px-3 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
-              isSeniorMode 
-                ? 'bg-emerald-600 text-white border-emerald-700 shadow' 
+            className={`px-2.5 sm:px-3 py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
+              isSeniorMode
+                ? 'bg-emerald-600 text-white border-emerald-700 shadow'
                 : 'bg-amber-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
             }`}
           >
@@ -158,11 +159,11 @@ export const Header: React.FC = () => {
 
           {/* User Profile or Login */}
           {user ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <div
                 onClick={() => navigate('/profile')}
                 data-voice={t('voice.opened_profile')}
-                className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-300 cursor-pointer"
+                className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-300 cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-full bg-saffron-500 text-white flex items-center justify-center font-bold text-sm">
                   {user.name ? user.name[0] : 'U'}
