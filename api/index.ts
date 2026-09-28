@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from '../server/src/routes/auth.routes.js';
 import panchayatRoutes from '../server/src/routes/panchayat.routes.js';
+import ttsRoutes from '../server/src/routes/tts.routes.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use((req, _res, next) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tts', ttsRoutes);
 app.use('/api', panchayatRoutes);
 
 // Health check

@@ -4,7 +4,6 @@ import { AccessibilityProvider, useAccessibility } from './context/Accessibility
 import { Header } from './components/common/Header';
 import { VoiceFloatingMic } from './components/common/VoiceFloatingMic';
 import { VoiceAnnouncer } from './components/common/VoiceAnnouncer';
-import { VoiceWarningBanner } from './components/common/VoiceWarningBanner';
 
 import { AuthPage } from './pages/AuthPage';
 import { ProfileSetupPage } from './pages/ProfileSetupPage';
@@ -36,7 +35,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
 const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-amber-50/30 text-slate-900 pb-20">
-      <VoiceWarningBanner />
       <Header />
       <main className="flex-1">
         <Routes>

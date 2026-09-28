@@ -83,6 +83,61 @@ function resolveVoice(targetLang: AppLanguage): { voice?: SpeechSynthesisVoice; 
   return { voice: undefined, usedFallback: false };
 }
 
+// --- Application-controlled cloud TTS (primarily for Gujarati) -------------
+// Device speechSynthesis can't be relied on for Gujarati: iOS ships no gu-IN
+// voice unless the user manually installs one, and requiring that is exactly
+// what we're avoiding. Instead, Gujarati text is sent to our own backend
+// (server/src/routes/tts.routes.ts), which calls a cloud TTS provider that
+// actually has a Gujarati voice and returns real audio — a capability of the
+// app, not of the device. Device speechSynthesis remains the primary path
+// for English/Hindi (already reliable) and is still the final fallback for
+// Gujarati if the cloud call fails for any reason (offline, quota, etc).
+const cloudAudioUrlCache = new Map<string, string>();
+
+let htmlAudioUnlocked = false;
+// A ~0.01s silent WAV — just enough for iOS to treat this as "audio has been
+// played from a user gesture," unlocking later programmatic .play() calls
+// made from async code (e.g. once a fetched TTS response comes back).
+const SILENT_WAV_DATA_URI = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+
+function unlockHtmlAudio() {
+  if (htmlAudioUnlocked || typeof Audio === 'undefined') return;
+  htmlAudioUnlocked = true;
+  try {
+    const el = new Audio(SILENT_WAV_DATA_URI);
+    el.volume = 0;
+    el.play().catch(() => {
+      // Some browsers still refuse this without a "trusted" gesture; a real
+      // playback attempt later gets its own chance and its own error handling.
+    });
+  } catch {
+    // Best-effort only.
+  }
+}
+
+async function fetchCloudAudioUrl(text: string, langCode: string): Promise<string | null> {
+  const cacheKey = `${langCode}::${text}`;
+  const cached = cloudAudioUrlCache.get(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const res = await fetch('/api/tts/synthesize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, lang: langCode })
+    });
+    if (!res.ok) return null;
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    cloudAudioUrlCache.set(cacheKey, url);
+    return url;
+  } catch (err) {
+    console.warn('Cloud TTS request failed, falling back to device voice:', err);
+    return null;
+  }
+}
+
 const STT_UNSUPPORTED_MESSAGE: Record<AppLanguage, string> = {
   hi: 'आपके ब्राउज़र में आवाज पहचान सुविधा उपलब्ध नहीं है।',
   en: 'Speech recognition is not supported in this browser.',
@@ -125,12 +180,6 @@ interface AccessibilityContextType {
   listen: (onResultCallback: (text: string) => void) => void;
   stopListening: () => void;
   voiceTranscript: string;
-
-  // Set when a requested voice (currently only checked for Gujarati) isn't
-  // installed on this device, so the UI can show a clear message instead of
-  // the user just wondering why it sounds wrong or stays silent.
-  voiceWarning: string | null;
-  dismissVoiceWarning: () => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -155,24 +204,23 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [voiceTranscript, setVoiceTranscript] = useState<string>('');
-  const [voiceWarning, setVoiceWarning] = useState<string | null>(null);
-  // Tracks which language we've already shown the "voice unavailable"
-  // message for, so it appears once per language selection instead of on
-  // every single announcement, but can appear again if the user switches
-  // away and back (e.g. after installing a voice pack).
-  const warnedForLangRef = useRef<AppLanguage | null>(null);
 
-  const dismissVoiceWarning = () => setVoiceWarning(null);
+  // Tracks the currently-playing cloud TTS <audio> element (if any) so
+  // stopSpeech() can stop it, the same way it cancels device speechSynthesis.
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Kick off async voice-list loading early, and unlock the speech engine on
-  // the very first real user interaction anywhere on the page — required by
-  // iOS before speechSynthesis will produce any audio, including for speak()
-  // calls made later from async code (e.g. after an API response resolves).
+  // Kick off async voice-list loading early, and unlock both the device
+  // speech engine and HTML5 <audio> playback on the very first real user
+  // interaction anywhere on the page — required by iOS before either will
+  // produce audio, including for calls made later from async code (e.g.
+  // once a chat reply or a cloud TTS fetch resolves).
   useEffect(() => {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.getVoices();
+    const unlock = () => {
+      unlockSpeechSynthesis();
+      unlockHtmlAudio();
+    };
+    if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
 
-    const unlock = () => unlockSpeechSynthesis();
     document.addEventListener('touchend', unlock, { once: true, capture: true });
     document.addEventListener('mousedown', unlock, { once: true, capture: true });
     document.addEventListener('keydown', unlock, { once: true, capture: true });
@@ -230,8 +278,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const setLanguage = (lang: AppLanguage) => {
     setLanguageState(lang);
     localStorage.setItem('gs_lang', lang);
-    // Allow a fresh "voice unavailable" check for whichever language was just selected.
-    warnedForLangRef.current = null;
   };
 
   const setToken = (t: string | null) => {
@@ -265,25 +311,18 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     return typeof current === 'string' ? current : keyPath;
   };
 
-  // Text-To-Speech (TTS)
-  // `langOverride` lets a caller that just switched languages (e.g. the language
-  // switcher itself) speak in the new language immediately, without waiting for
-  // the `language` state update to re-render first.
-  const speak = (text: string, langOverride?: AppLanguage) => {
+  // Device speechSynthesis path — the primary route for English/Hindi (both
+  // reliably available on-device already) and the final fallback for
+  // Gujarati if the cloud TTS call below fails for any reason.
+  const speakViaDevice = (cleanText: string, targetLang: AppLanguage) => {
     if (!('speechSynthesis' in window)) {
       console.warn('Speech synthesis not supported in this browser.');
       return;
     }
 
-    // A tap/click reaching this function is itself a genuine user gesture —
-    // treat it as an unlock opportunity too, in case the page-wide listener
-    // hasn't fired yet (e.g. this is the very first interaction).
     unlockSpeechSynthesis();
-
     window.speechSynthesis.cancel(); // Stop ongoing speech
 
-    const targetLang = langOverride || language;
-    const cleanText = text.replace(/[*#]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = SPEECH_LANG_MAP[targetLang];
 
@@ -291,19 +330,14 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     // on many devices there is no installed Gujarati (or even Hindi) voice,
     // and browsers often stay silent rather than substituting a default one.
     // Falling back to the closest available Indian-language voice means the
-    // user still hears the answer instead of nothing.
+    // user still hears the answer instead of nothing, with no visible nag —
+    // this is only reached at all when cloud TTS (see speak() below) has
+    // already failed, so it's a quiet last resort, not the main path.
     const { voice, usedFallback } = resolveVoice(targetLang);
     if (voice) {
       utterance.voice = voice;
       if (usedFallback) {
         console.warn(`No ${SPEECH_LANG_MAP[targetLang]} voice installed on this device; using ${voice.lang} voice instead.`);
-        // Only surface a visible message for Gujarati, and only once per
-        // language selection, so switching languages doesn't spam the user
-        // with a banner on every single announcement.
-        if (targetLang === 'gu' && warnedForLangRef.current !== 'gu') {
-          warnedForLangRef.current = 'gu';
-          setVoiceWarning(guDict.voice.gu_unavailable_message);
-        }
       }
     } else {
       console.warn(`No text-to-speech voices are available on this device for "${cleanText}".`);
@@ -331,9 +365,69 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Cloud TTS path — plays real audio generated by our own backend instead
+  // of depending on a device-installed voice. Returns true if playback
+  // actually started, so the caller can fall back to speakViaDevice if not.
+  const speakViaCloud = async (cleanText: string, langCode: string): Promise<boolean> => {
+    const url = await fetchCloudAudioUrl(cleanText, langCode);
+    if (!url) return false;
+
+    try {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+      }
+      const audio = new Audio(url);
+      currentAudioRef.current = audio;
+      audio.onplay = () => setIsSpeaking(true);
+      audio.onended = () => setIsSpeaking(false);
+      audio.onerror = () => setIsSpeaking(false);
+      await audio.play();
+      return true;
+    } catch (err) {
+      console.warn('Cloud TTS playback failed, falling back to device voice:', err);
+      return false;
+    }
+  };
+
+  // Text-To-Speech (TTS)
+  // `langOverride` lets a caller that just switched languages (e.g. the language
+  // switcher itself) speak in the new language immediately, without waiting for
+  // the `language` state update to re-render first.
+  //
+  // Gujarati is routed through our own cloud TTS backend first (see
+  // speakViaCloud / server/src/routes/tts.routes.ts) rather than device
+  // speechSynthesis, since that's a capability of this app rather than a
+  // capability the user's phone may or may not have installed. English and
+  // Hindi keep using the device voice directly, since both are reliably
+  // available already; device speechSynthesis is still the silent fallback
+  // for Gujarati if the cloud call itself fails (offline, quota, etc).
+  const speak = (text: string, langOverride?: AppLanguage) => {
+    const targetLang = langOverride || language;
+    const cleanText = text.replace(/[*#]/g, '');
+
+    // A tap/click reaching this function is a genuine user gesture — treat it
+    // as an unlock opportunity too, in case the page-wide listener hasn't
+    // fired yet (e.g. this is the very first interaction on the page).
+    unlockSpeechSynthesis();
+    unlockHtmlAudio();
+
+    if (targetLang === 'gu') {
+      speakViaCloud(cleanText, SPEECH_LANG_MAP.gu).then((played) => {
+        if (!played) speakViaDevice(cleanText, targetLang);
+      });
+      return;
+    }
+
+    speakViaDevice(cleanText, targetLang);
+  };
+
   const stopSpeech = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
+    }
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
     }
     setIsSpeaking(false);
   };
@@ -406,9 +500,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         isListening,
         listen,
         stopListening,
-        voiceTranscript,
-        voiceWarning,
-        dismissVoiceWarning
+        voiceTranscript
       }}
     >
       {children}

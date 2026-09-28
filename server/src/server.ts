@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
 import panchayatRoutes from './routes/panchayat.routes.js';
+import ttsRoutes from './routes/tts.routes.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use((req, _res, next) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tts', ttsRoutes);
 app.use('/api', panchayatRoutes);
 
 // Health check endpoint

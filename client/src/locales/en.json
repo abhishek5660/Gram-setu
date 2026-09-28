@@ -78,8 +78,7 @@
     "opening_documents": "Opening Document Locker...",
     "opening_assistant": "Asking Panchayat Mitra AI...",
     "mic_prompt": "Please speak! How can I assist you today?",
-    "opened_profile": "You have opened your profile.",
-    "gu_unavailable_message": "Gujarati voice is currently unavailable on this device. Please enable a Gujarati voice in your device settings or use the supported voice option."
+    "opened_profile": "You have opened your profile."
   },
 
   "home": {
