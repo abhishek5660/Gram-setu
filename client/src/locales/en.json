@@ -73,6 +73,8 @@
 
   "home": {
     "greeting": "Namaste & Welcome",
+    "guest_name": "Guest",
+    "guest_sub": "Login to access your Panchayat services",
     "senior_banner": "Senior Citizen Mode Active - Large Tiles & Voice Assistance",
     "quick_services": "Main Accessible Services (6 Big Tiles)",
     "one_tap_access": "1-Tap Quick Access",

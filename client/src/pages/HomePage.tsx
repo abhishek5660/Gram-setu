@@ -107,10 +107,10 @@ export const HomePage: React.FC = () => {
                 </button>
               </div>
               <h1 className="text-2xl md:text-4xl font-black tracking-tight">
-                {user?.name || 'Ramesh Prasad Kaka'}
+                {user?.name || t('home.guest_name')}
               </h1>
               <p className="text-white/90 text-sm md:text-base font-medium mt-1">
-                Rampur Panchayat • Ward 4 • Mobile: {user?.phone || '9876543210'}
+                {user ? `${user.village} • ${user.ward} • Mobile: ${user.phone}` : t('home.guest_sub')}
               </p>
             </div>
           </div>
